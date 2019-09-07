@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.pythontest.MainActivity">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:textSize="18dp"
+        android:layout_margin="16dp"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Shell Executer" />
+
+    <EditText
+        android:id="@+id/et_command"
+        android:layout_below="@+id/tv_title"
+        android:hint="셀명령어를 입력하세요."
+        android:layout_margin="8dp"
+        android:inputType="textUri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_help"
+        android:layout_below="@+id/et_command"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="셀명령어 보기"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/bt_execute"
+        android:layout_below="@+id/tv_help"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:text="Execute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_below="@+id/bt_execute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_result"
+            android:padding="16dp"
+            android:textColor="@android:color/holo_orange_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </ScrollView>
+
+
+</RelativeLayout>
