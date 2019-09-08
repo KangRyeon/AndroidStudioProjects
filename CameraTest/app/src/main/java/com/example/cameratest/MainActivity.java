@@ -1,19 +1,15 @@
 package com.example.cameratest;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,61 +17,66 @@ import android.widget.ImageView;
 
 import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
 
-public class MainActivity extends Activity
-{
+public class MainActivity extends Activity {
     Button camera_btn;
-    ImageView imageView;
+    ImageView img_view;
     public final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         camera_btn = (Button)findViewById(R.id.camera_btn);
-        imageView = (ImageView)findViewById(R.id.imageView);
+        img_view = (ImageView)findViewById(R.id.img_view);
 
+        // 체크해야할 퍼미션
+        int cameraPermission = checkSelfPermission(Manifest.permission.CAMERA);    // PERMISSION_GRANTED 여야 권한설정된것.
+        int writeExternalStoragePermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        // 어플 실행시 먼저 체크하고 실행됨.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            // 퍼미션 체크가 PERMISSION_GRANTED 여야 권한설정이 완료된 것.
+            if (cameraPermission == PackageManager.PERMISSION_GRANTED && writeExternalStoragePermission == PackageManager.PERMISSION_GRANTED) {
                 Log.d("권한", "권한 설정 완료");
             } else {
                 Log.d("권한", "권한 설정 요청");
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                ActivityCompat.requestPermissions(MainActivity.this
+                        , new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}
+                        , 1);
             }
         }
 
-        camera_btn.setOnClickListener(new View.OnClickListener()
-        {
+        // 카메라 버튼 클릭시 - startActivityForResult 끝난 후 onActivityResult 실행됨.
+        camera_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
                 Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, 1);
-
             }
         });
     }
 
+    // 사진 고르고 나서 실행되는 함수
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data.hasExtra("data")) {
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            if (bitmap != null) {
-                imageView.setImageBitmap(bitmap);
-            }
-        }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+        img_view.setImageBitmap(bitmap);
     }
 
-    // 권한 요청
+    // 권한 요청 결과 받는 함수
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d("권한요청", "onRequestPermissionsResult");
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            Log.d("권한", "Permission: " + permissions[0] + "was " + grantResults[0]);
+        Log.d("권한요청결과", "결과");
+        // 권한요청 결과 출력.
+        for(int i=0; i<grantResults.length; i++){
+            if(grantResults[i] == PackageManager.PERMISSION_GRANTED){
+                Log.d("권한받음", "Permission: " + grantResults[i]);
+            }
+            else
+                Log.d("권한못받음", "Permission: " + grantResults[i]);
         }
     }
-
 }
