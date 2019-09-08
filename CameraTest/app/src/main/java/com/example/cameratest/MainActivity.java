@@ -15,8 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
-
 public class MainActivity extends Activity {
     Button camera_btn;
     ImageView img_view;
