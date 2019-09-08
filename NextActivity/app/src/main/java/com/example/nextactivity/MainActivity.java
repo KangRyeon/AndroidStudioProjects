@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, NewActivity.class);
                 startActivity(intent);
-                //finish(); // finish()
+                //finish(); // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
             }
         });
     }

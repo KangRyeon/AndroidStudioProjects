@@ -19,7 +19,7 @@
 
         <activity
             android:name=".NewActivity"
-            android:label="new"
+            android:label="NewActivity"
             />
     </application>
 
