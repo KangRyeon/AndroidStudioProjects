@@ -82,6 +82,23 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
         if(requestCode == 1){
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             Log.d("결과1", "데이터 가져옴 뭔가 해야함");
+
+            String files = "/data/data/com.example.cameraandgallery/cache"+"/test.jpg";
+            // "test.txt"라는 파일을 생성
+            File file = new File(files);
+            try {
+                file.createNewFile();
+                FileOutputStream out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                out.close();
+            } catch (IOException e) {
+                Log.e("파일생성오류", "파일 없거나 못만듦");
+            }
+
+
+            Intent intent = new Intent(SelectCameraGalleryActivity.this, SaveActivity.class);
+            startActivity(intent);
+            //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
         }
 
         // requestCode == 2 : 갤러리
