@@ -4,16 +4,20 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +29,7 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
     Button gallery_btn;
     public final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
 
-
+    File tempFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +37,7 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
 
         camera_btn = (Button)findViewById(R.id.camera_btn);
         gallery_btn = (Button)findViewById(R.id.gallery_btn);
+
 
         // 체크해야할 퍼미션
         int cameraPermission = checkSelfPermission(Manifest.permission.CAMERA);    // PERMISSION_GRANTED 여야 권한설정된것.
@@ -56,7 +61,26 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 1);
+                Log.d("카메라","카메라열림");
+                String files = "/data/data/com.example.cameraandgallery/cache" + "/test.jpg";
+                // "test.txt"라는 파일을 생성
+                File file = new File(files);
+
+                try {
+                    tempFile = File.createTempFile("test", ".jpg", new File("/data/data/com.example.cameraandgallery/cache"));
+                    Log.d("파일생성","성공");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("파일생성","실패");
+                }
+                if (tempFile != null){
+                    //Uri photoUri = Uri.fromFile(tempFile);
+                    Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.cameraandgallery.fileprovider", tempFile);
+                    Log.d("저장된곳",photoUri.toString());
+                    intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, photoUri);
+                    startActivityForResult(intent, 1);
+                }
+
             }
         });
 
@@ -78,37 +102,18 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // requestCode == 1 : 카메라
-        if(requestCode == 1){
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            Log.d("결과1", "데이터 가져옴 뭔가 해야함");
+        if(resultCode == RESULT_OK) {
 
-            String files = "/data/data/com.example.cameraandgallery/cache"+"/test.jpg";
-            // "test.txt"라는 파일을 생성
-            File file = new File(files);
-            try {
-                file.createNewFile();
-                FileOutputStream out = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                out.close();
-            } catch (IOException e) {
-                Log.e("파일생성오류", "파일 없거나 못만듦");
-            }
+            // requestCode == 1 : 카메라
+            if (requestCode == 1) {
 
-
-            Intent intent = new Intent(SelectCameraGalleryActivity.this, SaveActivity.class);
-            startActivity(intent);
-            //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
-        }
-
-        // requestCode == 2 : 갤러리
-        if(requestCode == 2) {
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData()); // 갤러리에서 비트맵 형태로 받음
-                Log.d("결과2", "데이터 가져옴 뭔가 해야함");
-
-                String files = "/data/data/com.example.cameraandgallery/cache"+"/test.jpg";
+                //Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                //Log.d("결과1", "카메라 데이터 가져옴 크기: " + bitmap.getHeight() + ", " + bitmap.getWidth());
+                Log.d("결과1", "카메라 데이터 가져옴 크기: ");
+                Log.d("데이터",tempFile.toString()+tempFile.getName());
+                String files = "/data/data/com.example.cameraandgallery/cache" + "/test.jpg";
                 // "test.txt"라는 파일을 생성
+  /*
                 File file = new File(files);
                 try {
                     file.createNewFile();
@@ -118,16 +123,41 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     Log.e("파일생성오류", "파일 없거나 못만듦");
                 }
-
+*/
 
                 Intent intent = new Intent(SelectCameraGalleryActivity.this, SaveActivity.class);
                 startActivity(intent);
                 //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
-            } catch (IOException e) {
-                e.printStackTrace();
+            }
+
+            // requestCode == 2 : 갤러리
+            if (requestCode == 2) {
+
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData()); // 갤러리에서 비트맵 형태로 받음
+                    Log.d("결과2", "갤러리 데이터 가져옴");
+
+                    String files = "/data/data/com.example.cameraandgallery/cache" + "/test.jpg";
+                    // "test.txt"라는 파일을 생성
+                    File file = new File(files);
+                    try {
+                        file.createNewFile();
+                        FileOutputStream out = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                        out.close();
+                    } catch (IOException e) {
+                        Log.e("파일생성오류", "파일 없거나 못만듦");
+                    }
+
+
+                    Intent intent = new Intent(SelectCameraGalleryActivity.this, SaveActivity.class);
+                    startActivity(intent);
+                    //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
         //img_view.setImageBitmap(bitmap);
     }
 

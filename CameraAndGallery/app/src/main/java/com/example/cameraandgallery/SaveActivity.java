@@ -43,7 +43,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
 
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4;
+        options.inSampleSize = 1;
         options.inJustDecodeBounds = false;
         String files = "/data/data/com.example.cameraandgallery/cache"+"/test.jpg";
         bitmap = BitmapFactory.decodeFile(files, options);

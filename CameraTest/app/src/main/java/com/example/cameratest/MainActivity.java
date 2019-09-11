@@ -1,4 +1,4 @@
-package com.example.cameratest;
+package com.example.cameratest2;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
