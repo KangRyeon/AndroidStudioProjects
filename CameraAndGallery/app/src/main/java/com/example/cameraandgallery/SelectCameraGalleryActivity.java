@@ -1,6 +1,7 @@
 package com.example.cameraandgallery;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -27,34 +28,27 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
 
     Button camera_btn;
     Button gallery_btn;
-    public final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
 
     File tempFile;
+    String tempFilePath;
+    String tempFileName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selectcameragallery);
 
+        // 어플 실행시 먼저 체크하고 실행됨.
+        checkPermission();
+
         camera_btn = (Button)findViewById(R.id.camera_btn);
         gallery_btn = (Button)findViewById(R.id.gallery_btn);
 
+        tempFilePath = getApplicationContext().getCacheDir().toString();    // "/data/data/com.example.cameraandgallery/cache" (캐시폴더위치)
+        tempFileName = "/test.jpg";                                       // "/data/data/com.example.cameraandgallery/cache/test.jpg" (캐시폴더위치에 저장될 test.jpg)
 
-        // 체크해야할 퍼미션
-        int cameraPermission = checkSelfPermission(Manifest.permission.CAMERA);    // PERMISSION_GRANTED 여야 권한설정된것.
-        int writeExternalStoragePermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        // 어플 실행시 먼저 체크하고 실행됨.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // 퍼미션 체크가 PERMISSION_GRANTED 여야 권한설정이 완료된 것.
-            if (cameraPermission == PackageManager.PERMISSION_GRANTED && writeExternalStoragePermission == PackageManager.PERMISSION_GRANTED) {
-                Log.d("권한", "권한 설정 완료");
-            } else {
-                Log.d("권한", "권한 설정 요청");
-                ActivityCompat.requestPermissions(SelectCameraGalleryActivity.this
-                        , new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}
-                        , 1);
-            }
-        }
+        // tempFile을 미리 생성. (캐시폴더에 test.jpg)
+        tempFile = createTempFile(tempFilePath, tempFileName);
 
         // 카메라 버튼 클릭시 - startActivityForResult 끝난 후 onActivityResult 실행됨.
         camera_btn.setOnClickListener(new View.OnClickListener() {
@@ -62,18 +56,8 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 Log.d("카메라","카메라열림");
-                String files = "/data/data/com.example.cameraandgallery/cache" + "/test.jpg";
-                // "test.txt"라는 파일을 생성
-                File file = new File(files);
 
-                try {
-                    tempFile = File.createTempFile("test", ".jpg", new File("/data/data/com.example.cameraandgallery/cache"));
-                    Log.d("파일생성","성공");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.d("파일생성","실패");
-                }
-                if (tempFile != null){
+                if (tempFile != null){  // tempFile이 제대로 생성되었다면 그 파일에 찍은사진 저장.
                     //Uri photoUri = Uri.fromFile(tempFile);
                     Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.cameraandgallery.fileprovider", tempFile);
                     Log.d("저장된곳",photoUri.toString());
@@ -88,10 +72,8 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
         gallery_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent 생성
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*"); //이미지만 보이게
-                //Intent 시작 - 갤러리앱을 열어서 원하는 이미지를 선택할 수 있다.
+                intent.setType("image/*");
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 2);
             }
         });
@@ -106,59 +88,71 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
 
             // requestCode == 1 : 카메라
             if (requestCode == 1) {
-
-                //Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                //Log.d("결과1", "카메라 데이터 가져옴 크기: " + bitmap.getHeight() + ", " + bitmap.getWidth());
-                Log.d("결과1", "카메라 데이터 가져옴 크기: ");
-                Log.d("데이터",tempFile.toString()+tempFile.getName());
-                String files = "/data/data/com.example.cameraandgallery/cache" + "/test.jpg";
-                // "test.txt"라는 파일을 생성
-  /*
-                File file = new File(files);
-                try {
-                    file.createNewFile();
-                    FileOutputStream out = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                    out.close();
-                } catch (IOException e) {
-                    Log.e("파일생성오류", "파일 없거나 못만듦");
-                }
-*/
+                Log.d("결과1-카메라", "카메라 데이터 가져옴");
+                Log.d("데이터저장:",tempFile.toString());
 
                 Intent intent = new Intent(SelectCameraGalleryActivity.this, SaveActivity.class);
                 startActivity(intent);
-                //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
             }
 
             // requestCode == 2 : 갤러리
             if (requestCode == 2) {
-
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData()); // 갤러리에서 비트맵 형태로 받음
-                    Log.d("결과2", "갤러리 데이터 가져옴");
+                    Log.d("결과2-갤러리", "갤러리 데이터 가져옴");
 
-                    String files = "/data/data/com.example.cameraandgallery/cache" + "/test.jpg";
-                    // "test.txt"라는 파일을 생성
-                    File file = new File(files);
+                    // 내부저장소의 캐시폴더에 저장할 것.
                     try {
-                        file.createNewFile();
-                        FileOutputStream out = new FileOutputStream(file);
+                        FileOutputStream out = new FileOutputStream(tempFile);
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                         out.close();
                     } catch (IOException e) {
                         Log.e("파일생성오류", "파일 없거나 못만듦");
                     }
 
-
                     Intent intent = new Intent(SelectCameraGalleryActivity.this, SaveActivity.class);
                     startActivity(intent);
-                    //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                    finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-        //img_view.setImageBitmap(bitmap);
+    }
+
+    // 캐시폴더에 빈파일을 생성함.
+    public File createTempFile(String filepath, String filename) {
+        File file = null;
+        try {
+            //file = new File("/data/data/com.example.cameraandgallery/cache/"+"test.jpg");
+            file = new File(filepath+tempFileName);
+            Log.d("파일생성","성공");
+            Log.d("캐시파일 경로", file.getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("파일생성","실패");
+        }
+        return file;
+    }
+
+    // 퍼미션 체크
+    public void checkPermission() {
+        // 체크해야할 퍼미션
+        int cameraPermission = checkSelfPermission(Manifest.permission.CAMERA);    // PERMISSION_GRANTED 여야 권한설정된것.
+        int writeExternalStoragePermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // 퍼미션 체크가 PERMISSION_GRANTED 여야 권한설정이 완료된 것.
+            if (cameraPermission == PackageManager.PERMISSION_GRANTED && writeExternalStoragePermission == PackageManager.PERMISSION_GRANTED) {
+                Log.d("권한", "권한 설정 완료");
+            } else {
+                Log.d("권한", "권한 설정 요청");
+                ActivityCompat.requestPermissions(SelectCameraGalleryActivity.this
+                        , new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}
+                        , 1);
+            }
+        }
     }
 
     // 권한 요청 결과 받는 함수

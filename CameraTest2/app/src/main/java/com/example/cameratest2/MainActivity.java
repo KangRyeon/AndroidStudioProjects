@@ -56,8 +56,7 @@ public class MainActivity extends Activity {
         // 카메라 버튼 클릭시 - startActivityForResult 끝난 후 onActivityResult 실행됨.
         camera_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
                 // 이름이 겹치지 않는 빈파일을 생성하고, 그 파일의 uri를 얻어 사진을 찍은 뒤 그 uri에 저장한다.
