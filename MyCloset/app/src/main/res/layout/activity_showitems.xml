@@ -4,74 +4,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- 맨위 스크롤있는 부분 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_weight="1">
+
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <LinearLayout
+                android:id="@+id/list_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="50dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
 
-                <ImageButton
-                    android:layout_width="400px"
-                    android:layout_height="400px">
-
-                </ImageButton>
-                <ImageButton
-                    android:layout_width="400px"
-                    android:layout_height="400px">
-
-                </ImageButton>
-
-                <ImageButton
-                    android:layout_width="400px"
-                    android:layout_height="400px">
-
-                </ImageButton>
-
-                <ImageButton
-                    android:layout_width="400px"
-                    android:layout_height="400px">
-
-                </ImageButton>
-
+                <!-- 버튼들어감 -->
             </LinearLayout>
         </HorizontalScrollView>
-
-
     </LinearLayout>
 
-
+    <!-- 아래 큰이미지 보여주는 부분 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="30" >
+        android:layout_weight="30">
 
         <ImageView
+            android:id="@+id/img_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </ImageView>
+            android:layout_height="match_parent"
+            android:layout_margin="80dp"/>
     </LinearLayout>
 
+    <!-- 버튼부분 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
         <Button
+            android:id="@+id/choose_btn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:text="선택하기"/>
 
-        </Button>
     </LinearLayout>
 </LinearLayout>

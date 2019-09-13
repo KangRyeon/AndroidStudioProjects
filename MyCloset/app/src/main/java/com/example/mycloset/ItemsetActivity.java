@@ -39,6 +39,7 @@ public class ItemsetActivity extends AppCompatActivity {
         } catch(Exception e){
         }
 
+
         if(item != null) {
             Log.d("받아온 값1", item);
             Button btn = new Button(this);
@@ -46,10 +47,14 @@ public class ItemsetActivity extends AppCompatActivity {
             btn.setId(i);
             btn.setText(item);
             list.addView(btn);
+
+            final String finalItem = item;
+            Log.d("folder로 보낼값", item);
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ItemsetActivity.this, ShowItemsActivity.class);
+                    intent.putExtra("folder", finalItem);       // 현재의 item 이름(bag, sleeveless, mini_skirt ...)
                     startActivity(intent);
                     //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
                 }
@@ -63,6 +68,19 @@ public class ItemsetActivity extends AppCompatActivity {
                 btn.setId(i);
                 btn.setText(items[i]);
                 list.addView(btn);
+
+                final String finalItem = items[i];
+                Log.d("folder로 보낼값", items[i]);
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ItemsetActivity.this, ShowItemsActivity.class);
+                        intent.putExtra("folder", finalItem);       // 현재의 item 이름(bag, sleeveless, mini_skirt ...)
+                        startActivity(intent);
+                        //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                    }
+                });
+
             }
         }
 
@@ -73,6 +91,18 @@ public class ItemsetActivity extends AppCompatActivity {
                 btn.setId(i);
                 btn.setText(items2[i]);
                 list.addView(btn);
+
+                final String finalItem = items2[i];
+                Log.d("folder로 보낼값", items2[i]);
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ItemsetActivity.this, ShowItemsActivity.class);
+                        intent.putExtra("folder", finalItem);       // 현재의 item 이름(bag, sleeveless, mini_skirt ...)
+                        startActivity(intent);
+                        //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                    }
+                });
             }
         }
 
