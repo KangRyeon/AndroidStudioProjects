@@ -204,7 +204,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
     }
 
     // 받은 jsonobject에 따라 캐시메모리에 있는 데이터를 files 밑에 저장하고, text뷰에 보여줌
-    public void saveCacheTofiles(JSONObject jsonObj) throws JSONException {
+    public void saveCacheTofiles(JSONObject jsonObj) throws JSONException, IOException {
         JSONArray jArray = (JSONArray) jsonObj.get("deep_result");
 
         // 0번째 JSONObject를 받아옴
@@ -228,14 +228,16 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         }
 
         // "hood_T.jpg"라는 파일을 생성
-        File file = new File(saveFileName);
+        //File file = new File(saveFileName);
+        File file = File.createTempFile(row.getString("result")+"_",".jpg",new File(folder_name));  // 이름 랜덤으로(hood_T_1234325345.jpg)
         try {
-            Log.d("파일다시저장 : ", saveFileName);
+            //Log.d("파일다시저장 : ", saveFileName);
+            Log.d("파일다시저장 : ", file.getName());
             // 현재의 bitmap을 file로 저장함, 원래의 파일을 지움 (file.renameTo(resultFile) 로 하면 이름이 바껴서 저장됨)
             File testFile = new File(getApplicationContext().getCacheDir().toString());     // cache/test.jpg
             testFile.delete();
 
-            FileOutputStream out = new FileOutputStream(saveFileName);
+            FileOutputStream out = new FileOutputStream(file.getPath());
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
         } catch (Exception e) {
             e.printStackTrace();

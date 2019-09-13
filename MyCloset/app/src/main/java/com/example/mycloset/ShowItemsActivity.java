@@ -1,6 +1,7 @@
 package com.example.mycloset;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mycloset.dto.FashionSetDTO;
+
 import java.io.File;
 
 public class ShowItemsActivity  extends AppCompatActivity {
@@ -23,6 +26,11 @@ public class ShowItemsActivity  extends AppCompatActivity {
 
     Bitmap bitmap;
     Intent intent;
+
+    SharedPreferences sf;
+    SharedPreferences.Editor editor;
+    String category;
+    String item;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +40,25 @@ public class ShowItemsActivity  extends AppCompatActivity {
         img_view = (ImageView) findViewById(R.id.img_view);
         choose_btn = (Button)findViewById(R.id.choose_btn);
 
+/*
+        // 저장한 sfile 찾음
+        sf = getSharedPreferences("sfile",MODE_PRIVATE);
+        category = sf.getString("category","");       // bag, shose, cap, outer, lower, upper 가져올 것.
+        item = sf.getString("item","");                 // sleeveless, hood_T 등 ...
+        Log.d("쉐얼드 프리퍼런스 값 가져옴", category+", "+item);
+
+        // 저장된거 빼내면 지움
+        editor = sf.edit();
+        editor.remove("category");
+        editor.remove("item");
+        editor.commit();
+
+        folder = item;
+*/
+        String folder="";
 
         intent = getIntent();
-        String folder="";
+
 
         try {
             folder = intent.getExtras().getString("folder");
@@ -42,6 +66,8 @@ public class ShowItemsActivity  extends AppCompatActivity {
         } catch(Exception e){
             Log.d("이전 intent에서 받은값", "업서..");
         }
+
+
 
         File file = new File(getApplicationContext().getFilesDir()+"/"+folder);
         Log.d("상위폴더",getApplicationContext().getFilesDir()+"/"+folder);
@@ -76,6 +102,19 @@ public class ShowItemsActivity  extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d("가져오기", "files에서 파일 가져오기");
                     img_view.setImageBitmap(bitmap);
+                    //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                }
+            });
+
+            choose_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FashionSetDTO dto = new FashionSetDTO();
+                    Log.d("가져오기", "files에서 파일 가져오기");
+                    //Intent intent = new Intent(ShowItemsActivity.this, SelectCameraGalleryActivity.class);
+                    //intent.putExtra("set","cap");
+                    //startActivity(intent);
+                    //img_view.setImageBitmap(bitmap);
                     //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
                 }
             });

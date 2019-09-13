@@ -10,4 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />
+
+    <!-- 상의-hood_T, shirt 등의 버튼동적생성 -->
 </LinearLayout>
