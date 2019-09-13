@@ -1,7 +1,10 @@
 package com.example.mycloset.dto;
 
 
-public class FashionSetDTO {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class FashionSetDTO implements Serializable {
     private String[] accessory;
     private String outer;
     private String bag;

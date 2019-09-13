@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.mycloset.dto.FashionSetDTO;
 
 import java.io.File;
+import java.io.Serializable;
 
 public class ShowItemsActivity  extends AppCompatActivity {
 
@@ -31,6 +33,9 @@ public class ShowItemsActivity  extends AppCompatActivity {
     SharedPreferences.Editor editor;
     String category;
     String item;
+    String files;
+
+    FashionSetDTO set;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,33 +45,29 @@ public class ShowItemsActivity  extends AppCompatActivity {
         img_view = (ImageView) findViewById(R.id.img_view);
         choose_btn = (Button)findViewById(R.id.choose_btn);
 
-/*
-        // 저장한 sfile 찾음
-        sf = getSharedPreferences("sfile",MODE_PRIVATE);
-        category = sf.getString("category","");       // bag, shose, cap, outer, lower, upper 가져올 것.
-        item = sf.getString("item","");                 // sleeveless, hood_T 등 ...
-        Log.d("쉐얼드 프리퍼런스 값 가져옴", category+", "+item);
 
-        // 저장된거 빼내면 지움
-        editor = sf.edit();
-        editor.remove("category");
-        editor.remove("item");
-        editor.commit();
+        // 이전 뷰에 있던 세트 정보 가져옴
+        Intent intent = getIntent();
+        try {
+            set = (FashionSetDTO) intent.getSerializableExtra("set");
+            Log.d("ShowItemsActivity","이전 인텐트에서 보낸 set 있음");
+        } catch(Exception e){
+            Log.d("ShowItemsActivity","이전 인텐트에서 보낸 set 없음");
+        }
 
-        folder = item;
-*/
+
         String folder="";
 
         intent = getIntent();
 
 
         try {
+            category = intent.getExtras().getString("category");
             folder = intent.getExtras().getString("folder");
             Log.d("이전 intent에서 받은값", folder);
         } catch(Exception e){
             Log.d("이전 intent에서 받은값", "업서..");
         }
-
 
 
         File file = new File(getApplicationContext().getFilesDir()+"/"+folder);
@@ -87,7 +88,7 @@ public class ShowItemsActivity  extends AppCompatActivity {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 1;
             options.inJustDecodeBounds = false;
-            String files = getApplicationContext().getFilesDir()+"/"+folder+"/"+list[i].getName();
+            files = getApplicationContext().getFilesDir()+"/"+folder+"/"+list[i].getName();
             Log.d("가져온파일",files);
             bitmap = BitmapFactory.decodeFile(files, options);
 
@@ -109,13 +110,29 @@ public class ShowItemsActivity  extends AppCompatActivity {
             choose_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FashionSetDTO dto = new FashionSetDTO();
                     Log.d("가져오기", "files에서 파일 가져오기");
-                    //Intent intent = new Intent(ShowItemsActivity.this, SelectCameraGalleryActivity.class);
-                    //intent.putExtra("set","cap");
-                    //startActivity(intent);
+                    Intent intent = new Intent(ShowItemsActivity.this, ClosetActivity.class);
+                    if(category.equals("bag"))
+                        set.setBag(files);
+                    if(category.equals("cap"))
+                        set.setCap(files);
+                    if(category.equals("shose"))
+                        set.setShose(files);
+                    if(category.equals("outer"))
+                        set.setOuter(files);
+                    if(category.equals("upper"))
+                        set.setUpper(files);
+                    if(category.equals("lower"))
+                        set.setLower(files);
+
+                    Log.d("옷장으로 넘기는 파일",category+", "+files);
+                    Log.d("set의 upper에 들어있는것", set.getUpper());
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("set", (Serializable) set);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                     //img_view.setImageBitmap(bitmap);
-                    //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                    //finish();      // finish() 를 하지 않으면 메인액티비티가 꺼지지 않음
                 }
             });
         }

@@ -10,12 +10,15 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mycloset.dto.FashionSetDTO;
+
+import java.io.Serializable;
+
 public class ItemsetActivity extends AppCompatActivity {
 
     LinearLayout list;
 
-    SharedPreferences sf;
-    SharedPreferences.Editor editor;
+    FashionSetDTO set;
     String category;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,47 +31,39 @@ public class ItemsetActivity extends AppCompatActivity {
         String[] onepeace = {"long_arm_mini_onepeace", "long_arm_long_onepeace", "short_arm_mini_onepeace", "short_arm_long_onepeace"};
 
 
-        String[] items = null;
-        String[] items2 = null;
-        /*
-        // 저장한 sfile 찾음
-        sf = getSharedPreferences("sfile",MODE_PRIVATE);
-        category = sf.getString("category","");       // bag, shose, cap, outer, lower, upper 가져올 것.
-        Log.d("쉐얼드 프리퍼런스 값 가져옴", category);
-
-        // 저장된거 빼내면 지움
-        editor = sf.edit();
-        editor.remove("category");
-        editor.commit();
-
-
-
-        // 선택된 버튼에 따라서 item, items, items2 초기화
-        if (category == "bag" || category == "shose" || category == "cap")
-            item = category;
-        else if (category == "outer")
-            items = outer;
-        else if (category == "lower")
-            items = lower;
-        else {      // 상의와 원피스는 한꺼번에 가져올 것.
-            items = upper;
-            items2 = onepeace;
+        // 이전 뷰에 있던 세트 정보 가져옴
+        Intent intent = getIntent();
+        try {
+            set = (FashionSetDTO) intent.getSerializableExtra("set");
+        } catch(Exception e){
+            Log.d("오류", "못가져옴");
+            Log.d("오류",e.toString());
         }
-*/
-
-
-
 
         list = (LinearLayout)findViewById(R.id.list);
 
-        Intent intent = getIntent();
+
+        category = null;
         String item = null;
+        String[] items = null;
+        String[] items2 = null;
 
         try {
-            item = intent.getExtras().getString("item");
+            category = intent.getExtras().getString("category");
         } catch(Exception e){
         }
 
+        if(category.equals("bag") || category.equals("cap") || category.equals("shose"))
+            item = category;
+        else if(category.equals("outer"))
+            items = outer;
+        else if(category.equals("lower"))
+            items = lower;
+        else {          // upper이 넘어온다면 상의와 원피스 같이 보여주기
+            items = upper;
+            items2 = onepeace;
+        }
+/*
         try {
             items = intent.getExtras().getStringArray("items");
         } catch(Exception e){
@@ -78,7 +73,7 @@ public class ItemsetActivity extends AppCompatActivity {
             items2 = intent.getExtras().getStringArray("items2");
         } catch(Exception e){
         }
-
+*/
 
         // bag, shose, cap 이라면 category=bag, item=bag 보낼것.
         if(item != null) {
@@ -95,9 +90,12 @@ public class ItemsetActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ItemsetActivity.this, ShowItemsActivity.class);
-                    //editor.putString("category", category);
-                    //editor.putString("item", finalItem);
-                    //editor.commit();
+                    // 다음 뷰에 set 클래스 그대로 넘김
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("set", (Serializable) set);
+                    intent.putExtras(bundle);
+
+                    intent.putExtra("category", category);
                     intent.putExtra("folder", finalItem);       // 현재의 item 이름(bag, sleeveless, mini_skirt ...)
                     startActivity(intent);
                     //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
@@ -121,9 +119,12 @@ public class ItemsetActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(ItemsetActivity.this, ShowItemsActivity.class);
-                        //editor.putString("category", category);
-                        //editor.putString("item", finalItem);
-                        //editor.commit();
+                        // 다음 뷰에 set 클래스 그대로 넘김
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("set", (Serializable) set);
+                        intent.putExtras(bundle);
+
+                        intent.putExtra("category", category);
                         intent.putExtra("folder", finalItem);       // 현재의 item 이름(bag, sleeveless, mini_skirt ...)
                         startActivity(intent);
                         //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
@@ -148,9 +149,12 @@ public class ItemsetActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(ItemsetActivity.this, ShowItemsActivity.class);
-                        //editor.putString("category", "onepeace");
-                        //editor.putString("item", finalItem);
-                        //editor.commit();
+                        // 다음 뷰에 set 클래스 그대로 넘김
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("set", (Serializable) set);
+                        intent.putExtras(bundle);
+
+                        intent.putExtra("category", "onepeace");
                         intent.putExtra("folder", finalItem);       // 현재의 item 이름(bag, sleeveless, mini_skirt ...)
                         startActivity(intent);
                         //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
@@ -158,7 +162,5 @@ public class ItemsetActivity extends AppCompatActivity {
                 });
             }
         }
-
     }
-
 }
