@@ -112,21 +112,35 @@ public class ShowItemsActivity  extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d("가져오기", "files에서 파일 가져오기");
                     Intent intent = new Intent(ShowItemsActivity.this, ClosetActivity.class);
-                    if(category.equals("bag"))
+                    if(category.equals("bag")) {
                         set.setBag(files);
-                    if(category.equals("cap"))
+                        Log.d("set의 bag에 들어있는것", set.getBag());
+                    }
+                    if(category.equals("cap")) {
                         set.setCap(files);
-                    if(category.equals("shose"))
+                        Log.d("set의 cap에 들어있는것", set.getCap());
+                    }
+                    if(category.equals("shose")) {
                         set.setShose(files);
-                    if(category.equals("outer"))
+                        Log.d("set의 shose에 들어있는것", set.getShose());
+                    }
+                    if(category.equals("outer")) {
                         set.setOuter(files);
-                    if(category.equals("upper"))
+                        Log.d("set의 outer에 들어있는것", set.getOuter());
+                    }
+                    if(category.equals("upper")) {
                         set.setUpper(files);
-                    if(category.equals("lower"))
+                        Log.d("set의 upper에 들어있는것", set.getUpper());
+                    }
+                    if(category.equals("lower")) {
                         set.setLower(files);
+                        Log.d("set의 lower에 들어있는것", set.getLower());
+                    }
 
                     Log.d("옷장으로 넘기는 파일",category+", "+files);
-                    Log.d("set의 upper에 들어있는것", set.getUpper());
+                    try{
+                        Log.d("set의 upper에 들어있는것", set.getUpper());
+                    }catch(Exception e){}
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("set", (Serializable) set);
                     intent.putExtras(bundle);

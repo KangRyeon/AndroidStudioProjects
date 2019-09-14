@@ -58,7 +58,7 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
 
         try {
             set = (FashionSetDTO) intent.getSerializableExtra("set");
-            Log.d("옷장으로 가져온것", set.getUpper());
+            Log.d("ClosetActivity","이전 인텐트에서 보낸 set 있음");
         } catch(Exception e){
             Log.d("ClosetAcitivity","가져온게없음");
             set = null;
@@ -151,10 +151,12 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
         Intent intent;
         intent = new Intent(getApplicationContext(), ItemsetActivity.class);
 
-        if(set == null)
+        if(set == null) {
             set = new FashionSetDTO();
+            Log.d("현재 사용할 세트 생성", "현재 사용할 세트 생성");
+        }
         Bundle bundle = new Bundle();
-        bundle.putSerializable("set", set);
+        bundle.putSerializable("set", (Serializable)set);
         intent.putExtras(bundle);
 
         switch(v.getId()){

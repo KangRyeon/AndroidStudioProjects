@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class FashionSetDTO implements Serializable {
+    private String id;
     private String[] accessory;
     private String outer;
     private String bag;
@@ -13,6 +14,7 @@ public class FashionSetDTO implements Serializable {
     private String upper;
     private String lower;
 
+    public String getId() { return id; }
     public String[] getAccessory() { return accessory; }
     public String getOuter() { return outer; }
     public String getBag() { return bag; }
@@ -21,6 +23,7 @@ public class FashionSetDTO implements Serializable {
     public String getUpper() { return upper; }
     public String getLower() { return lower; }
 
+    public void setId(String id) { this.id = id; }
     public void setAccessory(String[] accessory) { this.accessory = accessory; }
     public void setOuter(String outer) { this.outer = outer; }
     public void setBag(String bag) { this.bag = bag; }
