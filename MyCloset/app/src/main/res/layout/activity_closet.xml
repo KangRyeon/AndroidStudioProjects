@@ -76,41 +76,57 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginRight="50dp"
-                    android:layout_marginBottom="200dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-
-                    <ImageButton
-                        android:id="@+id/cap_btn"
+                    <!--
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="50dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="200dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        -->
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="200px"
+                        android:layout_marginBottom="20px"
+                        android:orientation="vertical">
+                        <ImageButton
+                            android:id="@+id/cap_btn"
+                            android:layout_width="match_parent"
+                            android:layout_height="200px"
+                            android:background="@drawable/cap"
+                            android:text="모자" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="300px"
+                        android:layout_marginBottom="20px"
+                        android:orientation="vertical">
+                        <ImageButton
+                            android:id="@+id/upper_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/upper"
+                            android:text="상의" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_marginBottom="20px"
                         android:layout_weight="1"
-                        android:background="@drawable/cap"
-                        android:text="모자" />
-
-                    <ImageButton
-                        android:id="@+id/upper_btn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20px"
-                        android:layout_weight="1"
-                        android:background="@drawable/upper"
-                        android:text="상의" />
-
-                    <ImageButton
-                        android:id="@+id/lower_btn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20px"
-                        android:layout_weight="1"
-                        android:background="@drawable/lower"
-                        android:text="하의" />
-
+                        android:orientation="vertical">
+                        <ImageButton
+                            android:id="@+id/lower_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/lower"
+                            android:text="하의" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

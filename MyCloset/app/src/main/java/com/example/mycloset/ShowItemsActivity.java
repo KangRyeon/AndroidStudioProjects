@@ -70,8 +70,8 @@ public class ShowItemsActivity  extends AppCompatActivity {
         }
 
 
-        File file = new File(getApplicationContext().getFilesDir()+"/"+folder);
-        Log.d("상위폴더",getApplicationContext().getFilesDir()+"/"+folder);
+        File file = new File(getApplicationContext().getFilesDir()+"/"+category+"/"+folder);
+        Log.d("상위폴더",getApplicationContext().getFilesDir()+"/"+category+"/"+folder);
 
         File list[] = file.listFiles();
 
@@ -88,7 +88,7 @@ public class ShowItemsActivity  extends AppCompatActivity {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 1;
             options.inJustDecodeBounds = false;
-            files = getApplicationContext().getFilesDir()+"/"+folder+"/"+list[i].getName();
+            files = getApplicationContext().getFilesDir()+"/"+category+"/"+folder+"/"+list[i].getName();
             Log.d("가져온파일",files);
             bitmap = BitmapFactory.decodeFile(files, options);
 
@@ -130,9 +130,10 @@ public class ShowItemsActivity  extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("set", (Serializable) set);
                     intent.putExtras(bundle);
+
                     startActivity(intent);
+                    finish();      // finish() 를 하지 않으면 메인액티비티가 꺼지지 않음
                     //img_view.setImageBitmap(bitmap);
-                    //finish();      // finish() 를 하지 않으면 메인액티비티가 꺼지지 않음
                 }
             });
         }

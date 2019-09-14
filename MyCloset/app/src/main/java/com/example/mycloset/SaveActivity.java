@@ -28,10 +28,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 public class SaveActivity extends AppCompatActivity implements Runnable {
 // 캐시폴더의 test.jpg이미지를 가져와 보여주고, 저장하기 버튼을 누르면 서버로 이미지를 보내고 딥러닝 결과 가져옴
     Button save_btn;
+    Button rotate_btn;
     ImageView img_view;
     TextView txt_view;
 
@@ -45,6 +47,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         setContentView(R.layout.activity_save);
 
         save_btn = (Button)findViewById(R.id.save_btn);
+        rotate_btn = (Button)findViewById(R.id.rotate_btn);
         img_view = (ImageView)findViewById(R.id.img_view);
         txt_view = (TextView)findViewById(R.id.txt_view);
 
@@ -63,6 +66,19 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
                 Log.d("서버로 보내서 저장하는거까지 해야함","서버");
                 Thread th = new Thread(SaveActivity.this);
                 th.start();
+                finish();
+            }
+        });
+
+        rotate_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int rotate=90;
+                Log.d("회전각도", ""+rotate);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(rotate); // 회전한 각도 입력
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                image_handler.sendEmptyMessage(0);
             }
         });
     }
@@ -213,8 +229,43 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
 
         str = row.getString("result");
 
+        String[] outer = {"cardigan", "jacket", "padding", "coat", "jumper", "hood zipup"};
+        String[] upper = {"hood_T", "long_T", "pola", "shirt", "short_T", "sleeveless", "vest"};
+        String[] lower = {"long_pants", "short_pants", "Leggings", "mini_skirt", "long_skirt"};
+        String[] onepeace = {"long_arm_mini_onepeace", "long_arm_long_onepeace", "short_arm_mini_onepeace", "short_arm_long_onepeace"};
+        String[] etc = {"bag", "cap", "shose"};
+        // 받아온 결과가 어느 카테고리인지 확인하기
+
+        Arrays.sort(upper);
+        int inOuter = Arrays.binarySearch(outer, str);
+        int inUpper = Arrays.binarySearch(upper, str);
+        int inLower = Arrays.binarySearch(lower, str);
+        int inOnepeace = Arrays.binarySearch(onepeace, str);
+        String category = null;
+
+        if(inOuter >= 0) {
+            Log.d("현재 받아온 것은 outer임", str + "은 outer임"+","+inOuter);
+            category = "outer";
+        }
+        if(inUpper >= 0) {
+            Log.d("현재 받아온 것은 upper임", str + "은 upper임"+","+inUpper);
+            category = "upper";
+        }
+        if(inLower >= 0) {
+            Log.d("현재 받아온 것은 lower임", str + "은 lower임"+","+inLower);
+            category = "lower";
+        }
+        if(inOnepeace >= 0) {
+            Log.d("현재 받아온 것은 onepeace임", str + "은 onepeace임"+","+inOnepeace);
+            category = "onepeace";
+        }
+        if(str.equals("bag") || str.equals("cap") || str.equals("shose")) {
+            Log.d("카테고리가 폴더명과 같아야함.", str + "카테고리가 폴더명과 같아야함");
+            category = str;
+        }
+
         // 받아온 결과에 따라 이미지 저장하기 (files 밑에 hood_T 같은 폴더 생성, hood_T.jpg로 저장)
-        String folder_name = getApplicationContext().getFilesDir().toString()+"/"+row.getString("result");    // "/data/data/com.example.cameraandgallery/files/"+row.getString("result"); // /files/hood_T/ 폴더생성
+        String folder_name = getApplicationContext().getFilesDir().toString()+"/"+category+"/"+row.getString("result");    // "/data/data/com.example.cameraandgallery/files/"+row.getString("result"); // /files/upper/hood_T/ 폴더생성
         String saveFileName = folder_name + "/" + row.getString("result") + ".jpg";     // /files/받아온이름.jpg(/files/hood_T.jpg)
 
         // data/data/패키지이름 밑에 "files" 라는 폴더 먼저 생성하고 "hood_T.jpg" 생성
