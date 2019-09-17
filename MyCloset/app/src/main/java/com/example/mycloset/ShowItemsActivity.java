@@ -98,10 +98,21 @@ public class ShowItemsActivity  extends AppCompatActivity {
             btn.setImageBitmap(resize);
             list_layout.addView(btn);
 
+            final String onclick_filename = list[i].getName();
+            final String onclick_foldername = folder;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("가져오기", "files에서 파일 가져오기");
+                    Log.d("가져오기", "files에서 파일 가져오기: "+onclick_filename);
+                    files = getApplicationContext().getFilesDir()+"/"+category+"/"+onclick_foldername+"/"+onclick_filename;
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 1;
+                    options.inJustDecodeBounds = false;
+                    bitmap = BitmapFactory.decodeFile(files, options);
+
+                    Bitmap resize;
+                    int maxsize = 200;
+                    resize = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() * 200) / bitmap.getHeight(), 200, true);
                     img_view.setImageBitmap(bitmap);
                     //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
                 }
