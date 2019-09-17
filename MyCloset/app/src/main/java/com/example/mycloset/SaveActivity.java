@@ -233,7 +233,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         String[] upper = {"hood_T", "long_T", "pola", "shirt", "short_T", "sleeveless", "vest"};
         String[] lower = {"long_pants", "short_pants", "Leggings", "mini_skirt", "long_skirt"};
         String[] onepeace = {"long_arm_mini_onepeace", "long_arm_long_onepeace", "short_arm_mini_onepeace", "short_arm_long_onepeace"};
-        String[] etc = {"bag", "cap", "shose"};
+        String[] etc = {"bag", "cap", "shoes"};
         // 받아온 결과가 어느 카테고리인지 확인하기
 
         Arrays.sort(upper);
@@ -259,7 +259,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
             Log.d("현재 받아온 것은 onepeace임", str + "은 onepeace임"+","+inOnepeace);
             category = "onepeace";
         }
-        if(str.equals("bag") || str.equals("cap") || str.equals("shose")) {
+        if(str.equals("bag") || str.equals("cap") || str.equals("shoes")) {
             Log.d("카테고리가 폴더명과 같아야함.", str + "카테고리가 폴더명과 같아야함");
             category = str;
         }

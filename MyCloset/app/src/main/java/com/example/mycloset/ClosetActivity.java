@@ -22,7 +22,7 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
 
     ImageButton outer_btn;
     ImageButton bag_btn;
-    ImageButton shose_btn;
+    ImageButton shoes_btn;
     ImageButton cap_btn;
     ImageButton upper_btn;
     ImageButton lower_btn;
@@ -40,8 +40,8 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
         bag_btn = (ImageButton)findViewById(R.id.bag_btn);
         bag_btn.setOnClickListener(this);
 
-        shose_btn = (ImageButton)findViewById(R.id.shose_btn);
-        shose_btn.setOnClickListener(this);
+        shoes_btn = (ImageButton)findViewById(R.id.shoes_btn);
+        shoes_btn.setOnClickListener(this);
 
         cap_btn = (ImageButton)findViewById(R.id.cap_btn);
         cap_btn.setOnClickListener(this);
@@ -94,8 +94,8 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
 
                 bag_btn.setImageBitmap(resize);
             }
-            if(set.getShose() != null){
-                String files = set.getShose();
+            if(set.getShoes() != null){
+                String files = set.getShoes();
                 Log.d("가져온파일",files);
                 bitmap = BitmapFactory.decodeFile(files, options);
 
@@ -103,7 +103,7 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
                 int maxsize = 200;
                 resize = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() * 200) / bitmap.getHeight(), 200, true);
 
-                shose_btn.setImageBitmap(resize);
+                shoes_btn.setImageBitmap(resize);
             }
             if(set.getCap() != null){
                 String files = set.getCap();
@@ -166,8 +166,8 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.bag_btn:
                 intent.putExtra("category","bag");
                 break;
-            case R.id.shose_btn:
-                intent.putExtra("category","shose");
+            case R.id.shoes_btn:
+                intent.putExtra("category","shoes");
                 break;
             case R.id.cap_btn:
                 intent.putExtra("category","cap");
@@ -188,8 +188,8 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.bag_btn:
                 intent.putExtra("item","bag");
                 break;
-            case R.id.shose_btn:
-                intent.putExtra("item","shose");
+            case R.id.shoes_btn:
+                intent.putExtra("item","shoes");
                 break;
             case R.id.cap_btn:
                 intent.putExtra("item","cap");

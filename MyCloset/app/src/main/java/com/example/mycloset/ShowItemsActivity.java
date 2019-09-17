@@ -120,9 +120,9 @@ public class ShowItemsActivity  extends AppCompatActivity {
                         set.setCap(files);
                         Log.d("set의 cap에 들어있는것", set.getCap());
                     }
-                    if(category.equals("shose")) {
-                        set.setShose(files);
-                        Log.d("set의 shose에 들어있는것", set.getShose());
+                    if(category.equals("shoes")) {
+                        set.setShoes(files);
+                        Log.d("set의 shoes에 들어있는것", set.getShoes());
                     }
                     if(category.equals("outer")) {
                         set.setOuter(files);

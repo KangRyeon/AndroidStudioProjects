@@ -57,12 +57,12 @@
                     android:text="가방" />
 
                 <ImageButton
-                    android:id="@+id/shose_btn"
+                    android:id="@+id/shoes_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginBottom="20px"
-                    android:background="@drawable/shose"
+                    android:background="@drawable/shoes"
                     android:text="신발" />
             </LinearLayout>
 

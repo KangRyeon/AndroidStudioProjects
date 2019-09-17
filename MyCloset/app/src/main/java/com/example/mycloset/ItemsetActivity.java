@@ -53,7 +53,7 @@ public class ItemsetActivity extends AppCompatActivity {
         } catch(Exception e){
         }
 
-        if(category.equals("bag") || category.equals("cap") || category.equals("shose"))
+        if(category.equals("bag") || category.equals("cap") || category.equals("shoes"))
             item = category;
         else if(category.equals("outer"))
             items = outer;
@@ -75,7 +75,7 @@ public class ItemsetActivity extends AppCompatActivity {
         }
 */
 
-        // bag, shose, cap 이라면 category=bag, item=bag 보낼것.
+        // bag, shoes, cap 이라면 category=bag, item=bag 보낼것.
         if(item != null) {
             Log.d("받아온 값1", item);
             Button btn = new Button(this);
