@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
                     //Uri photoUri = Uri.fromFile(tempFile);
                     Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.mycloset.fileprovider", tempFile);
                     Log.d("저장된곳",photoUri.toString());
+                    intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, (long) (1024*768));
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                     startActivityForResult(intent, 1);
                 }
@@ -97,7 +99,27 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
             if (requestCode == 2) {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData()); // 갤러리에서 비트맵 형태로 받음
+
+                    int maxsize = 1024;
+                    int x,y;
+                    if(bitmap.getWidth() > bitmap.getHeight()) {
+                        x = maxsize;
+                        y = bitmap.getHeight() * maxsize / bitmap.getWidth();
+                    }
+                    else{
+                        y = maxsize;
+                        x = bitmap.getWidth() * maxsize / bitmap.getHeight();
+                    }
+
+                    bitmap = Bitmap.createScaledBitmap(bitmap, x, y, true);
                     Log.d("결과2-갤러리", "갤러리 데이터 가져옴");
+
+                    // 이미지를 회전시킨다.
+                    int rotate=90;
+                    Log.d("회전각도", ""+rotate);
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(rotate); // 회전한 각도 입력
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
                     // 내부저장소의 캐시폴더에 저장할 것.
                     try {

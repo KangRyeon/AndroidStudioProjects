@@ -66,7 +66,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
                 Log.d("서버로 보내서 저장하는거까지 해야함","서버");
                 Thread th = new Thread(SaveActivity.this);
                 th.start();
-                finish();
+                //finish();
             }
         });
 
@@ -113,7 +113,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
 
         Log.d("버튼 눌림", "버튼 눌림");
         try {
-            String serverUri = "http://192.168.55.193:8080/uploadImage";
+            String serverUri = "http://192.168.25.6:8080/uploadImage";
             String sendFilePath = getApplicationContext().getCacheDir().toString();
             String sendFileName = "/test.jpg";                                      // cache 폴더에 카메라, 갤러리에서 고른 이미지 있음.
 
