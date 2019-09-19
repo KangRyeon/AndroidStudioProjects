@@ -16,9 +16,17 @@ import androidx.fragment.app.Fragment;
 
 import com.example.mycloset.dto.FashionSetDTO;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
-
-public class ClosetActivity extends AppCompatActivity implements View.OnClickListener {
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+public class ClosetActivity extends AppCompatActivity implements View.OnClickListener, Runnable {
 
     ImageButton outer_btn;
     ImageButton bag_btn;
@@ -26,6 +34,8 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
     ImageButton cap_btn;
     ImageButton upper_btn;
     ImageButton lower_btn;
+
+    Button setsave_btn;
 
     Bitmap bitmap;
     FashionSetDTO set;
@@ -51,6 +61,16 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
 
         lower_btn = (ImageButton)findViewById(R.id.lower_btn);
         lower_btn.setOnClickListener(this);
+
+        setsave_btn = (Button)findViewById(R.id.setsave_btn);
+        setsave_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 서버로 세트 클래스 보내기
+                Thread th = new Thread(ClosetActivity.this);
+                th.start();
+            }
+        });
 
         // 옷장 class 받기
         Intent intent = getIntent();
@@ -204,5 +224,62 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
         }
 */
         startActivity(intent);
+    }
+
+
+    @Override
+    public void run() {
+        Log.d("버튼 눌림", "버튼 눌림");
+
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+
+        StringBuffer sb = new StringBuffer();
+
+        try {
+            Log.d("서버보내기1","서버보내기");
+            URL connectUrl = new URL("http://192.168.55.193:8080/setSave");       // 스프링프로젝트의 home.jsp 주소
+            DataOutputStream dos;
+            HttpURLConnection conn = (HttpURLConnection) connectUrl.openConnection();       // URL 연결한 객체 생성
+
+            if (conn != null) {
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                conn.setUseCaches(false);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+
+                // write data
+                dos = new DataOutputStream(conn.getOutputStream());
+                dos.writeBytes("id=test&set_name=세트1&outer=null&upper=null&lower=null");
+                Log.d("보내는값","id=test&set_name=세트1&outer=null&upper=null&lower=null");
+
+
+                dos.flush(); // finish upload...
+                dos.close();
+
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+                    Log.d("연결", "연결이 제대로 됨");
+                    while (true) {
+                        String line = br.readLine();
+                        if (line == null)
+                            break;
+                        sb.append(line + "\n");
+                    }
+                    Log.d("받은것", "오잉"+sb.toString());
+                    br.close();
+                }
+                conn.disconnect();
+
+                Log.d("서버보내기 끝","서버보내기 끝");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("myLog_error", "에러발생했습니다...");
+        }
+
+
     }
 }
