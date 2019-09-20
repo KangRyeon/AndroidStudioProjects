@@ -38,6 +38,11 @@
             android:name=".ShowItemsActivity"
             android:label="ShowItemsActivity"
             />
+        <activity
+            android:name=".PopupActivity"
+            android:label="PopupActivity"
+            android:theme="@android:style/Theme.Dialog"
+            />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.mycloset.fileprovider"

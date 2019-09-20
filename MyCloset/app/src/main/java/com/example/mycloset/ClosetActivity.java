@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -66,9 +69,21 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
         setsave_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+                if(set != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("set", (Serializable) set);
+                    intent.putExtras(bundle);
+                }
+
+                startActivityForResult(intent, 0);
+
+                /*
                 // 서버로 세트 클래스 보내기
                 Thread th = new Thread(ClosetActivity.this);
                 th.start();
+
+                 */
             }
         });
 
@@ -89,7 +104,13 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
             options.inSampleSize = 1;
             options.inJustDecodeBounds = false;
 
-            if(set.getAccessory() != null){
+            if(set.getAccessory1() != null){
+                //악세사리에 넣어야함
+            }
+            if(set.getAccessory2() != null){
+                //악세사리에 넣어야함
+            }
+            if(set.getAccessory3() != null){
                 //악세사리에 넣어야함
             }
             if(set.getOuter() != null){
@@ -231,55 +252,12 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
     public void run() {
         Log.d("버튼 눌림", "버튼 눌림");
 
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
 
-        StringBuffer sb = new StringBuffer();
+    }
 
-        try {
-            Log.d("서버보내기1","서버보내기");
-            URL connectUrl = new URL("http://192.168.55.193:8080/setSave");       // 스프링프로젝트의 home.jsp 주소
-            DataOutputStream dos;
-            HttpURLConnection conn = (HttpURLConnection) connectUrl.openConnection();       // URL 연결한 객체 생성
-
-            if (conn != null) {
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                conn.setUseCaches(false);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
-
-                // write data
-                dos = new DataOutputStream(conn.getOutputStream());
-                dos.writeBytes("id=test&set_name=세트1&outer=null&upper=null&lower=null");
-                Log.d("보내는값","id=test&set_name=세트1&outer=null&upper=null&lower=null");
-
-
-                dos.flush(); // finish upload...
-                dos.close();
-
-                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
-                    Log.d("연결", "연결이 제대로 됨");
-                    while (true) {
-                        String line = br.readLine();
-                        if (line == null)
-                            break;
-                        sb.append(line + "\n");
-                    }
-                    Log.d("받은것", "오잉"+sb.toString());
-                    br.close();
-                }
-                conn.disconnect();
-
-                Log.d("서버보내기 끝","서버보내기 끝");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("myLog_error", "에러발생했습니다...");
-        }
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(this, "세트가 저장되었습니다.", Toast.LENGTH_SHORT).show();
     }
 }
