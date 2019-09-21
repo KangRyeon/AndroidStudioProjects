@@ -39,6 +39,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="옷 추가" />
+
+            <Button
+                android:id="@+id/fashionsetlist_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="내가 만든 세트" />
         </LinearLayout>
 
         <LinearLayout

@@ -43,6 +43,14 @@
             android:label="PopupActivity"
             android:theme="@android:style/Theme.Dialog"
             />
+        <activity
+            android:name=".FashionSetListActivity"
+            android:label="FashionSetListActivity"
+            />
+        <activity
+            android:name=".FashionSetActivity"
+            android:label="FashionSetActivity"
+            />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.mycloset.fileprovider"

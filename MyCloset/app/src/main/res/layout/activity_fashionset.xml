@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="50px">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!-- 상단 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="300px"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/accessory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/accessory"
+                android:text="악세사리" />
+        </LinearLayout>
+
+        <!-- 하단 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="50px"
+            android:layout_weight="5">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/outer_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="20px"
+                    android:background="@drawable/outer"
+                    android:text="아우터" />
+
+                <ImageButton
+                    android:id="@+id/bag_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="20px"
+                    android:background="@drawable/bag"
+                    android:text="가방" />
+
+                <ImageButton
+                    android:id="@+id/shoes_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="20px"
+                    android:background="@drawable/shoes"
+                    android:text="신발" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/mannequin2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="200px"
+                        android:layout_marginBottom="20px"
+                        android:orientation="vertical">
+                        <ImageButton
+                            android:id="@+id/cap_btn"
+                            android:layout_width="match_parent"
+                            android:layout_height="200px"
+                            android:background="@drawable/cap"
+                            android:text="모자" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="300px"
+                        android:orientation="vertical">
+                        <ImageButton
+                            android:id="@+id/upper_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/upper"
+                            android:scaleType="fitXY"
+                            android:text="상의" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="20px"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <ImageButton
+                            android:id="@+id/lower_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/lower"
+                            android:scaleType="fitXY"
+                            android:text="하의" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+<!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/setsave_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="세트저장하기"
+                />
+        </LinearLayout>
+        -->
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
