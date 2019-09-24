@@ -200,18 +200,19 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
         bundle.putSerializable("set", (Serializable)set);
         intent.putExtras(bundle);
 
+        // etc로 변경
         switch(v.getId()){
             case R.id.outer_btn:     // ip 받아오는 버튼
                 intent.putExtra("category","outer");
                 break;
             case R.id.bag_btn:
-                intent.putExtra("category","bag");
+                intent.putExtra("category","etc");
                 break;
             case R.id.shoes_btn:
-                intent.putExtra("category","shoes");
+                intent.putExtra("category","etc");
                 break;
             case R.id.cap_btn:
-                intent.putExtra("category","cap");
+                intent.putExtra("category","etc");
                 break;
             case R.id.upper_btn:
                 intent.putExtra("category","upper");

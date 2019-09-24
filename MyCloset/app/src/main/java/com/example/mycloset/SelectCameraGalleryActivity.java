@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import com.example.mycloset.dto.FashionSetDTO;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,7 +32,7 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
     File tempFile;
     String tempFilePath;
     String tempFileName;
-
+    String category;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,15 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
 
         // 어플 실행시 먼저 체크하고 실행됨.
         checkPermission();
+
+        Intent intent = getIntent();
+        try {
+            category = intent.getStringExtra("category");
+            Log.d("SelectCameraGalleryActivity","이전 인텐트에서 보낸 카테고리 있음");
+            Log.d("SelectCameraGalleryActivity에서 받은 category", category);
+        } catch(Exception e){
+            Log.d("SelectCameraGalleryActivity","가져온게없음");
+        }
 
         camera_btn = (Button)findViewById(R.id.camera_btn);
         gallery_btn = (Button)findViewById(R.id.gallery_btn);
@@ -91,6 +102,7 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
                 Log.d("데이터저장:",tempFile.toString());
 
                 Intent intent = new Intent(SelectCameraGalleryActivity.this, SaveActivity.class);
+                intent.putExtra("category",category);
                 startActivity(intent);
                 finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
             }
@@ -131,6 +143,7 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
                     }
 
                     Intent intent = new Intent(SelectCameraGalleryActivity.this, SaveActivity.class);
+                    intent.putExtra("category",category);
                     startActivity(intent);
                     finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
                 } catch (IOException e) {

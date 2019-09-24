@@ -51,6 +51,11 @@
             android:name=".FashionSetActivity"
             android:label="FashionSetActivity"
             />
+
+        <activity
+            android:name=".SaveResultActivity"
+            android:label="SaveResultActivity"
+            />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.mycloset.fileprovider"

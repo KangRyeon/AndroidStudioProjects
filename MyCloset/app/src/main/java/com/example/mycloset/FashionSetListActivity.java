@@ -3,6 +3,8 @@ package com.example.mycloset;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +33,8 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
     LinearLayout list;
 
     JSONObject jsonObj;
+    Button btn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +121,7 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
                                                 ,row_set.getString("bag"),row_set.getString("shoes")
                                                 ,row_set.getString("accessory1"),row_set.getString("accessory2"),row_set.getString("accessory3"));
 
-                        Button btn = new Button(this);
+                        btn = new Button(this);
                         btn.setId(i);
                         btn.setText(row_set.getString("set_name"));
 
@@ -133,7 +137,10 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
                                 //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
                             }
                         });
-                        list.addView(btn);
+                        //list.addView(btn);
+                        Thread.sleep(50);
+                        handler.sendEmptyMessage(0);
+                        Thread.sleep(50);
                     }
                 }
                 else {    //result 값이 0이면
@@ -148,6 +155,14 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
 
 
     }
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            list.addView(btn);
+        }
+    };
+
 
     // 서버에서 값 받아 JSONObjtect로 변환
     public JSONObject getJSONDataFromServer(HttpURLConnection conn) throws IOException, JSONException {

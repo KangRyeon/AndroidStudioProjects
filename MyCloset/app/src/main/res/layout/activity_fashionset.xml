@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="50px">
+    android:layout_margin="50px"
+    android:background="#FFFFFF">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,7 +31,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="50px"
             android:layout_weight="5">
 
             <LinearLayout
@@ -44,27 +44,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginBottom="20px"
                     android:background="@drawable/outer"
-                    android:text="아우터" />
+                    android:scaleType="centerCrop"
+
+                    android:text="아우터"
+                    />
 
                 <ImageButton
                     android:id="@+id/bag_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginBottom="20px"
                     android:background="@drawable/bag"
+                    android:scaleType="centerCrop"
+                    android:padding="50dp"
+
                     android:text="가방" />
 
-                <ImageButton
-                    android:id="@+id/shoes_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginBottom="20px"
-                    android:background="@drawable/shoes"
-                    android:text="신발" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -75,14 +72,16 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_margin="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="200px"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_marginBottom="20px"
                         android:orientation="vertical">
                         <ImageButton
@@ -90,36 +89,70 @@
                             android:layout_width="match_parent"
                             android:layout_height="200px"
                             android:background="@drawable/cap"
+                            android:scaleType="centerCrop"
+                            android:padding="30dp"
                             android:text="모자" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="300px"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="77"
                         android:orientation="vertical">
+
                         <ImageButton
                             android:id="@+id/upper_btn"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:padding="10dp"
                             android:background="@drawable/upper"
-                            android:scaleType="fitXY"
-                            android:text="상의" />
+                            android:scaleType="centerCrop"
+                            android:scrollY="-50px"
+                            android:text="상의"
+
+                            />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="20px"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="60"
                         android:orientation="vertical">
+
                         <ImageButton
                             android:id="@+id/lower_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/lower"
-                            android:scaleType="fitXY"
-                            android:text="하의" />
+                            android:scaleType="centerCrop"
+                            android:scrollY="8px"
+                            android:text="하의"
+
+                            />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="90"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/shoes_btn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/shoes"
+                            android:padding="30dp"
+                            android:text="신발" />
+
+                    </LinearLayout>
+
+
                 </LinearLayout>
             </LinearLayout>
+
+
         </LinearLayout>
 <!--
         <LinearLayout

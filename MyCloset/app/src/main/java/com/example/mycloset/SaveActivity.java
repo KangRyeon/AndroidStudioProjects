@@ -1,5 +1,6 @@
 package com.example.mycloset;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mycloset.dto.ClothesDTO;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,7 +44,8 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
     Bitmap bitmap;
     String str;
     JSONObject jsonObj;
-
+    String category;
+    ClothesDTO clothes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,16 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         rotate_btn = (Button)findViewById(R.id.rotate_btn);
         img_view = (ImageView)findViewById(R.id.img_view);
         txt_view = (TextView)findViewById(R.id.txt_view);
+
+        Intent intent = getIntent();
+        try {
+                category = intent.getStringExtra("category");
+                Log.d("SaveActivity","이전 인텐트에서 보낸 카테고리 있음");
+                Log.d("SaveActivity에서 받은 category", category);
+                txt_view.setText("category : "+category);
+            } catch(Exception e){
+                Log.d("SaveActivity","가져온게없음");
+        }
 
         str = "";
 
@@ -113,7 +128,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
 
         Log.d("버튼 눌림", "버튼 눌림");
         try {
-            String serverUri = "http://192.168.25.6:8080/uploadImage";
+            String serverUri = "http://192.168.55.193:8080/uploadImage2";
             String sendFilePath = getApplicationContext().getCacheDir().toString();
             String sendFileName = "/test.jpg";                                      // cache 폴더에 카메라, 갤러리에서 고른 이미지 있음.
 
@@ -122,6 +137,18 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
 
             // 딥러닝 결과따라 캐시파일에 있던 test.jpg를 files밑에 자동으로 저장하기, text뷰에 보여줌
             saveCacheTofiles(jsonObj);
+
+            Intent intent = new Intent(SaveActivity.this, SaveResultActivity.class);
+            // 다음 인텐트에 clothes 보내줌
+            if(clothes != null) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("clothes", (Serializable) clothes);
+                intent.putExtras(bundle);
+            }
+            else {
+                Log.d("SaveActivity", "clothes 없대");
+            }
+            startActivity(intent);
 
         } catch (Exception e) {
             Log.d("Test", "exception " + e.getMessage());
@@ -171,7 +198,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
                 byte[] buffer = new byte[bufferSize];
                 int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
 
-                // read image
+                // 이미지 전송
                 while (bytesRead > 0) {
                     dos.write(buffer, 0, bufferSize);
                     bytesAvailable = mFileInputStream.available();
@@ -180,8 +207,21 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
                 }
 
                 dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
+                // 텍스트전송
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"id\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes("test" + lineEnd);  // id=test
+
+                // 텍스트전송
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"category\"" + lineEnd);
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(category + lineEnd);
+
+                // 전송데이터 끝
+                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
                 mFileInputStream.close();
                 dos.flush(); // finish upload...
                 dos.close();
@@ -219,7 +259,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         return jsonObj;
     }
 
-    // 받은 jsonobject에 따라 캐시메모리에 있는 데이터를 files 밑에 저장하고, text뷰에 보여줌
+    // 받은 jsonobject에 따라 캐시메모리에 있는 데이터를 files 밑에 저장하고, text뷰에 보여줌, clothes 객체 생성해줌
     public void saveCacheTofiles(JSONObject jsonObj) throws JSONException, IOException {
         JSONArray jArray = (JSONArray) jsonObj.get("deep_result");
 
@@ -227,6 +267,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         JSONObject row = jArray.getJSONObject(0);
         Log.d("받아온값1 : ", row.getString("result"));
 
+        clothes = new ClothesDTO("test",row.getString("dress_num"),row.getString("category1"),row.getString("category2"),row.getString("color"),row.getString("pattern"),row.getString("length"));
         str = row.getString("result");
 
         String[] outer = {"cardigan", "jacket", "padding", "coat", "jumper", "hood zipup"};
@@ -264,9 +305,9 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
             category = str;
         }
 
-        // 받아온 결과에 따라 이미지 저장하기 (files 밑에 hood_T 같은 폴더 생성, hood_T.jpg로 저장)
+        // 받아온 결과에 따라 이미지 저장하기 (files 밑에 hood_T 같은 폴더 생성, hood_T_201909231148.jpg로 저장)
         String folder_name = getApplicationContext().getFilesDir().toString()+"/"+category+"/"+row.getString("result");    // "/data/data/com.example.cameraandgallery/files/"+row.getString("result"); // /files/upper/hood_T/ 폴더생성
-        String saveFileName = folder_name + "/" + row.getString("result") + ".jpg";     // /files/받아온이름.jpg(/files/hood_T.jpg)
+        String saveFileName = folder_name + "/" + row.getString("dress_num") + ".jpg";     // /files/받아온이름.jpg(/files/upper/hood_T/hood_T_201909231148.jpg)
 
         // data/data/패키지이름 밑에 "files" 라는 폴더 먼저 생성하고 "hood_T.jpg" 생성
         // "files"라는 폴더 생성
@@ -279,8 +320,8 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         }
 
         // "hood_T.jpg"라는 파일을 생성
-        //File file = new File(saveFileName);
-        File file = File.createTempFile(row.getString("result")+"_",".jpg",new File(folder_name));  // 이름 랜덤으로(hood_T_1234325345.jpg)
+        File file = new File(saveFileName);
+        //File file = File.createTempFile(row.getString("result")+"_",".jpg",new File(folder_name));  // 이름 랜덤으로(hood_T_1234325345.jpg)
         try {
             //Log.d("파일다시저장 : ", saveFileName);
             Log.d("파일다시저장 : ", file.getName());

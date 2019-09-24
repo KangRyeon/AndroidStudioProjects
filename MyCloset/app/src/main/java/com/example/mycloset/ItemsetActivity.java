@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class ItemsetActivity extends AppCompatActivity {
 
     LinearLayout list;
-
+    Button add_clothes_btn;
     FashionSetDTO set;
     String category;
     @Override
@@ -29,7 +29,7 @@ public class ItemsetActivity extends AppCompatActivity {
         String[] upper = {"hood_T", "long_T", "pola", "shirt", "short_T", "sleeveless", "vest"};
         String[] lower = {"long_pants", "short_pants", "Leggings", "mini_skirt", "long_skirt"};
         String[] onepeace = {"long_arm_mini_onepeace", "long_arm_long_onepeace", "short_arm_mini_onepeace", "short_arm_long_onepeace"};
-
+        String[] etc = {"bag", "cap", "shoes"};
 
         // 이전 뷰에 있던 세트 정보 가져옴
         Intent intent = getIntent();
@@ -41,7 +41,18 @@ public class ItemsetActivity extends AppCompatActivity {
         }
 
         list = (LinearLayout)findViewById(R.id.list);
+        add_clothes_btn = (Button)findViewById(R.id.add_clothes_btn);
 
+        // 옷 추가 버튼 클릭시 - 새로운 액티비티가 틀어짐. -> 원피스 upper 어케되는지 보기
+        add_clothes_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemsetActivity.this, SelectCameraGalleryActivity.class);
+                intent.putExtra("category",category);
+                startActivity(intent);
+                //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+            }
+        });
 
         category = null;
         String item = null;
@@ -53,8 +64,8 @@ public class ItemsetActivity extends AppCompatActivity {
         } catch(Exception e){
         }
 
-        if(category.equals("bag") || category.equals("cap") || category.equals("shoes"))
-            item = category;
+        if(category.equals("etc"))
+            items = etc;
         else if(category.equals("outer"))
             items = outer;
         else if(category.equals("lower"))
@@ -74,8 +85,8 @@ public class ItemsetActivity extends AppCompatActivity {
         } catch(Exception e){
         }
 */
-
-        // bag, shoes, cap 이라면 category=bag, item=bag 보낼것.
+/*
+        // bag, shoes, cap 이라면 category=etc, folder=bag 보낼것.
         if(item != null) {
             Log.d("받아온 값1", item);
             Button btn = new Button(this);
@@ -103,7 +114,10 @@ public class ItemsetActivity extends AppCompatActivity {
             });
         }
 
-        // outer, lower, upper이라면 category=outer, item=cardigan 보낼 것.
+
+ */
+        // outer, lower, upper이라면 category=outer, folder=cardigan 보낼 것.
+        // etc라면 category=etc, folder=bag 으로 보낼것
         if(items != null) {
             for(int i=0; i<items.length; i++) {
                 Log.d("받아온 값2", items[i]);

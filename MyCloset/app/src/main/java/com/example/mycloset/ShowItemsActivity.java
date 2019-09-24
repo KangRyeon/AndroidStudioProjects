@@ -118,20 +118,23 @@ public class ShowItemsActivity  extends AppCompatActivity {
                 }
             });
 
+            // bag, cap, shoes는 folder에 "bag"이라는 글자가 있음.
+            // category = "etc"로 설정되어있음.
+            final String finalFolder = folder;
             choose_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d("가져오기", "files에서 파일 가져오기");
                     Intent intent = new Intent(ShowItemsActivity.this, ClosetActivity.class);
-                    if(category.equals("bag")) {
+                    if(finalFolder.equals("bag")) {
                         set.setBag(files);
                         Log.d("set의 bag에 들어있는것", set.getBag());
                     }
-                    if(category.equals("cap")) {
+                    if(finalFolder.equals("cap")) {
                         set.setCap(files);
                         Log.d("set의 cap에 들어있는것", set.getCap());
                     }
-                    if(category.equals("shoes")) {
+                    if(finalFolder.equals("shoes")) {
                         set.setShoes(files);
                         Log.d("set의 shoes에 들어있는것", set.getShoes());
                     }
