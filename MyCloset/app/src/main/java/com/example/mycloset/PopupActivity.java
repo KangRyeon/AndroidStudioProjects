@@ -1,7 +1,11 @@
 package com.example.mycloset;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.mycloset.dto.FashionSetDTO;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
@@ -28,8 +34,10 @@ public class PopupActivity extends Activity implements Runnable{
     Button save_btn;
     EditText edit_text;
 
+    Intent intent;
     String set_name;
     FashionSetDTO set;
+    String result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +52,7 @@ public class PopupActivity extends Activity implements Runnable{
             @Override
             public void onClick(View v) {
                 // 옷장 class 받기
-                Intent intent = getIntent();
+                intent = getIntent();
                 try {
                     set = (FashionSetDTO) intent.getSerializableExtra("set");
                     Log.d("PopupActivity","이전 인텐트에서 보낸 set 있음");
@@ -55,8 +63,11 @@ public class PopupActivity extends Activity implements Runnable{
 
                 set_name = String.valueOf(edit_text.getText()); // 세트이름 적은것 가져와서
                 set.setSet_name(set_name);
+
                 Thread th = new Thread(PopupActivity.this);
                 th.start();
+
+
 
                 //액티비티(팝업) 닫기
                 finish();
@@ -84,8 +95,13 @@ public class PopupActivity extends Activity implements Runnable{
         if(set.getAccessory2()==null) accessory2 = "null"; else accessory2 = set.getAccessory2();
         if(set.getAccessory3()==null) accessory3 = "null"; else accessory3 = set.getAccessory3();
         try {
-            Log.d("서버보내기1","서버보내기");
-            URL connectUrl = new URL("http://192.168.55.193:8080/saveSet");       // 스프링프로젝트의 home.jsp 주소
+            Log.d("서버보내기1_PopupActivity","서버보내기");
+
+            SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+            String ip = pref.getString("ip_addr", "");   // http://192.168.55.193:8080
+            Log.d("PopupActivity", ip);
+
+            URL connectUrl = new URL(ip+"/saveSet");       // 스프링프로젝트의 home.jsp 주소
             DataOutputStream dos;
             HttpURLConnection conn = (HttpURLConnection) connectUrl.openConnection();       // URL 연결한 객체 생성
 
@@ -100,7 +116,11 @@ public class PopupActivity extends Activity implements Runnable{
                 OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
                 PrintWriter writer = new PrintWriter(outStream);
 
-                writer.write("id=test");
+                pref = getSharedPreferences("pref", MODE_PRIVATE);
+                String id = pref.getString("id", "");   // test
+                Log.d("PopupActivity", id);
+
+                writer.write("id="+id);
                 writer.write("&set_name="+set_name);
                 writer.write("&outer="+outer);
                 writer.write("&upper="+upper);
@@ -137,17 +157,32 @@ public class PopupActivity extends Activity implements Runnable{
                     Log.d("받은것", "오잉"+sb.toString());
                     br.close();
                 }
+
+                // 받아온 source를 JSONObject로 변환한다.
+                JSONObject jsonObj = new JSONObject(sb.toString());
+                JSONArray jArray = (JSONArray) jsonObj.get("result");
+
+                // 0번째 JSONObject를 받아옴
+                JSONObject row = jArray.getJSONObject(0);
+                Log.d("받아온값1 : ", row.getString("result"));
                 conn.disconnect();
 
                 Log.d("서버보내기 끝","서버보내기 끝");
-
-
+                if(row.getString("result").equals("ok")) {
+                    Log.d("PopupActivity", "패션세트 잘 추가함");
+                    result = "ok";
+                }
+                else {
+                    Log.d("PopupActivity", "패션세트 추가못함");
+                    result = "no";
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("myLog_error", "에러발생했습니다...");
         }
     }
+
 /*
     //확인 버튼 클릭
     public void mOnClose(View v){
@@ -169,10 +204,12 @@ public class PopupActivity extends Activity implements Runnable{
         }
         return true;
     }
-
+/*
     @Override
     public void onBackPressed() {
         //안드로이드 백버튼 막기
         return;
     }
+
+ */
 }

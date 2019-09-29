@@ -1,6 +1,7 @@
 package com.example.mycloset;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -128,7 +129,11 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
 
         Log.d("버튼 눌림", "버튼 눌림");
         try {
-            String serverUri = "http://192.168.55.193:8080/uploadImage2";
+            SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+            String ip = pref.getString("ip_addr", "");   // http://192.168.55.193:8080
+            Log.d("PopupActivity", ip);
+
+            String serverUri = ip+"/uploadImage3";
             String sendFilePath = getApplicationContext().getCacheDir().toString();
             String sendFileName = "/test.jpg";                                      // cache 폴더에 카메라, 갤러리에서 고른 이미지 있음.
 
@@ -270,14 +275,17 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         clothes = new ClothesDTO("test",row.getString("dress_num"),row.getString("category1"),row.getString("category2"),row.getString("color"),row.getString("pattern"),row.getString("length"));
         str = row.getString("result");
 
-        String[] outer = {"cardigan", "jacket", "padding", "coat", "jumper", "hood zipup"};
+        String[] outer = {"cardigan", "jacket", "padding", "coat", "jumper", "hood_zipup"};
         String[] upper = {"hood_T", "long_T", "pola", "shirt", "short_T", "sleeveless", "vest"};
         String[] lower = {"long_pants", "short_pants", "Leggings", "mini_skirt", "long_skirt"};
         String[] onepeace = {"long_arm_mini_onepeace", "long_arm_long_onepeace", "short_arm_mini_onepeace", "short_arm_long_onepeace"};
         String[] etc = {"bag", "cap", "shoes"};
         // 받아온 결과가 어느 카테고리인지 확인하기
 
+        Arrays.sort(outer);
         Arrays.sort(upper);
+        Arrays.sort(lower);
+        Arrays.sort(onepeace);
         int inOuter = Arrays.binarySearch(outer, str);
         int inUpper = Arrays.binarySearch(upper, str);
         int inLower = Arrays.binarySearch(lower, str);
@@ -305,6 +313,22 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
             category = str;
         }
 
+        // 현재 보이는 이미지를 cache 밑에 test.jpg로 저장함.(회전시킨것)
+        String folder_name = getApplicationContext().getCacheDir().toString();    // "/data/data/com.example.cameraandgallery/files/"+row.getString("result"); // /files/upper/hood_T/ 폴더생성
+        String saveFileName = folder_name + "/" + "test.jpg";     // /cache/test.jpg
+
+        File file = new File(saveFileName);
+        //File file = File.createTempFile(row.getString("result")+"_",".jpg",new File(folder_name));  // 이름 랜덤으로(hood_T_1234325345.jpg)
+        try {
+            //Log.d("파일다시저장 : ", saveFileName);
+            Log.d("파일다시저장 : ", file.getName());
+
+            FileOutputStream out = new FileOutputStream(file.getPath());
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+/*
         // 받아온 결과에 따라 이미지 저장하기 (files 밑에 hood_T 같은 폴더 생성, hood_T_201909231148.jpg로 저장)
         String folder_name = getApplicationContext().getFilesDir().toString()+"/"+category+"/"+row.getString("result");    // "/data/data/com.example.cameraandgallery/files/"+row.getString("result"); // /files/upper/hood_T/ 폴더생성
         String saveFileName = folder_name + "/" + row.getString("dress_num") + ".jpg";     // /files/받아온이름.jpg(/files/upper/hood_T/hood_T_201909231148.jpg)
@@ -336,6 +360,8 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         }
 
         text_handler.sendEmptyMessage(0);
+
+ */
     }
 
     // handler = 백그라운드 thread에서 전달된 메시지 처리(UI변경 등을 여기서 해줌.)

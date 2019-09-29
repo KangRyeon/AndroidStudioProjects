@@ -40,7 +40,7 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fashionsetlist);
 
-        String[] outer = {"cardigan", "jacket", "padding", "coat", "jumper", "hood zipup"};
+        String[] outer = {"cardigan", "jacket", "padding", "coat", "jumper", "hood_zipup"};
         String[] upper = {"hood_T", "long_T", "pola", "shirt", "short_T", "sleeveless", "vest"};
         String[] lower = {"long_pants", "short_pants", "Leggings", "mini_skirt", "long_skirt"};
         String[] onepeace = {"long_arm_mini_onepeace", "long_arm_long_onepeace", "short_arm_mini_onepeace", "short_arm_long_onepeace"};
@@ -57,7 +57,11 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
     @Override
     public void run() {
         try {
-            URL connectUrl = new URL("http://192.168.55.193:8080/loadFashionSetList");       // 스프링프로젝트의 home.jsp 주소
+            SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+            String ip = pref.getString("ip_addr", "");   // http://192.168.55.193:8080
+            Log.d("FashionSetListActivity", ip);
+
+            URL connectUrl = new URL(ip+"/loadFashionSetList");       // 스프링프로젝트의 home.jsp 주소
             DataOutputStream dos;
             HttpURLConnection conn = (HttpURLConnection) connectUrl.openConnection();       // URL 연결한 객체 생성
             Log.d("FashionSetListActivity","URL객체 생성");
@@ -75,7 +79,10 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
                 Log.d("서버보내기 시작","서버보내기 시작");
 
                 //writer.write("id=asdf");
-                writer.write("id=test");
+                String id = pref.getString("id", "");   // test
+                Log.d("FashionSetListActivity", id);
+
+                writer.write("id="+id);
                 writer.flush();
                 writer.close();
 

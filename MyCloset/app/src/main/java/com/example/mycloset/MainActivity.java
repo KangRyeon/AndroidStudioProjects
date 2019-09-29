@@ -3,6 +3,7 @@ package com.example.mycloset;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,10 +18,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("id","test");
+        editor.putString("ip_addr","http://192.168.55.193:8080");
+        editor.commit();
+
+
         add_clothes_btn = (Button)findViewById(R.id.add_clothes_btn);
         closet_btn = (Button)findViewById(R.id.closet_btn);
         fashionsetlist_btn = (Button)findViewById(R.id.fashionsetlist_btn);
 
+        /*
         // 옷 추가 버튼 클릭시 - 새로운 액티비티가 틀어짐.
         add_clothes_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                 //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
             }
         });
-
+*/
         // 옷장 버튼 클릭시
         closet_btn.setOnClickListener(new View.OnClickListener() {
             @Override
