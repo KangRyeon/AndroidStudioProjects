@@ -10,7 +10,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button add_clothes_btn;
+    Button recommend_btn;
     Button closet_btn;
     Button fashionsetlist_btn;
     @Override
@@ -25,21 +25,21 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
 
 
-        add_clothes_btn = (Button)findViewById(R.id.add_clothes_btn);
+        recommend_btn = (Button)findViewById(R.id.recommend_btn);
         closet_btn = (Button)findViewById(R.id.closet_btn);
         fashionsetlist_btn = (Button)findViewById(R.id.fashionsetlist_btn);
 
-        /*
-        // 옷 추가 버튼 클릭시 - 새로운 액티비티가 틀어짐.
-        add_clothes_btn.setOnClickListener(new View.OnClickListener() {
+
+        // 옷 추천 버튼 클릭시 - 새로운 액티비티가 틀어짐.
+        recommend_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SelectCameraGalleryActivity.class);
+                Intent intent = new Intent(MainActivity.this, SelectCameraGalleryRecommendActivity.class);
                 startActivity(intent);
-                //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
             }
         });
-*/
+
         // 옷장 버튼 클릭시
         closet_btn.setOnClickListener(new View.OnClickListener() {
             @Override

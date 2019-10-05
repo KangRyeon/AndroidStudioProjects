@@ -1,5 +1,6 @@
 package com.example.mycloset;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -47,6 +48,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
     JSONObject jsonObj;
     String category;
     ClothesDTO clothes;
+    ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +97,16 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
                 matrix.postRotate(rotate); // 회전한 각도 입력
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                 image_handler.sendEmptyMessage(0);
+
+                String files = getApplicationContext().getCacheDir()+"/test.jpg";
+                // 내부저장소의 캐시폴더에 저장할 것.
+                try {
+                    FileOutputStream out = new FileOutputStream(files);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    out.close();
+                } catch (IOException e) {
+                    Log.e("파일생성오류", "파일 없거나 못만듦");
+                }
             }
         });
     }
@@ -123,17 +135,26 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
         }
     };
 
+    Handler loading_handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            pd = ProgressDialog.show(SaveActivity.this, "로딩중", "페이지 로딩 중입니다...");
+        }
+    };
     // test.jpg 이미지를 서버로 보냄, 그 이미지에 해당하는 딥러닝 결과 받아옴
     @Override
     public void run() {
 
         Log.d("버튼 눌림", "버튼 눌림");
+        //loading_handler.sendEmptyMessage(0);
+
         try {
             SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
             String ip = pref.getString("ip_addr", "");   // http://192.168.55.193:8080
             Log.d("PopupActivity", ip);
 
-            String serverUri = ip+"/uploadImage3";
+            String serverUri = ip+"/uploadImage5";
             String sendFilePath = getApplicationContext().getCacheDir().toString();
             String sendFileName = "/test.jpg";                                      // cache 폴더에 카메라, 갤러리에서 고른 이미지 있음.
 
@@ -153,6 +174,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
             else {
                 Log.d("SaveActivity", "clothes 없대");
             }
+            //pd.dismiss();
             startActivity(intent);
 
         } catch (Exception e) {
