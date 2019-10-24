@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
@@ -100,6 +101,41 @@ public class SelectCameraGalleryActivity extends AppCompatActivity {
             if (requestCode == 1) {
                 Log.d("결과1-카메라", "카메라 데이터 가져옴");
                 Log.d("데이터저장:",tempFile.toString());
+
+                // cache/test.jpg bitmap으로 가져와서 1024*1024로 변경하기
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 1;
+                options.inJustDecodeBounds = false;
+                String files = getApplicationContext().getCacheDir()+"/test.jpg";
+                Bitmap bitmap = BitmapFactory.decodeFile(files, options);
+
+                int maxsize = 1024;
+                int x,y;
+                if(bitmap.getWidth() > bitmap.getHeight()) {
+                    x = maxsize;
+                    y = bitmap.getHeight() * maxsize / bitmap.getWidth();
+                }
+                else{
+                    y = maxsize;
+                    x = bitmap.getWidth() * maxsize / bitmap.getHeight();
+                }
+
+                bitmap = Bitmap.createScaledBitmap(bitmap, x, y, true);
+
+                // 이미지를 회전시킨다.
+                int rotate=90;
+                Log.d("회전각도", ""+rotate);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(rotate); // 회전한 각도 입력
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+                try {
+                    FileOutputStream out = new FileOutputStream(tempFile);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    out.close();
+                } catch (IOException e) {
+                    Log.e("파일생성오류", "파일 없거나 못만듦");
+                }
 
                 Intent intent = new Intent(SelectCameraGalleryActivity.this, SaveActivity.class);
                 intent.putExtra("category",category);

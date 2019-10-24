@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0.1"
         android:orientation="horizontal">
 
         <Button
@@ -33,63 +33,57 @@
     </LinearLayout>
 
 
-    <!-- 중단 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/img_view"
-            android:layout_width="150dp"
+        <!-- 상단 -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" >
-        </ImageView>
+            android:layout_weight="1.5">
+            <ImageView
+                android:id="@+id/img_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" >
+            </ImageView>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="vertical">
 
-            <!-- 스크롤있는 부분 -->
-            <HorizontalScrollView
+            <!-- 이미지 뷰 상단 -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
-
-                <LinearLayout
-                    android:id="@+id/upper_list_layout"
+                <ImageView
+                    android:id="@+id/choose_upper_imageview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
+                    android:scrollY="-70px"></ImageView>
+            </LinearLayout>
 
-                    <!-- 버튼들어감 -->
-                </LinearLayout>
-            </HorizontalScrollView>
-
-            <!-- 스크롤있는 부분 -->
-            <HorizontalScrollView
+            <!-- 이미지 뷰 하단 -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
-
-                <LinearLayout
-                    android:id="@+id/lower_list_layout"
+                <ImageView
+                    android:id="@+id/choose_lower_imageview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
-
-                    <!-- 버튼들어감 -->
-                </LinearLayout>
-            </HorizontalScrollView>
+                    android:layout_height="match_parent"
+                    android:scrollY="80px"></ImageView>
+            </LinearLayout>
 
         </LinearLayout>
+
 
     </LinearLayout>
 
@@ -97,12 +91,67 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="1.2"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="5" />
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <!--스크롤 상단-->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:id="@+id/upper_list_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <!-- 버튼들어감 -->
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <!--스크롤 하단-->
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:id="@+id/lower_list_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <!-- 버튼들어감 -->
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
         <Button
             android:id="@+id/choose_btn"
             android:layout_width="match_parent"

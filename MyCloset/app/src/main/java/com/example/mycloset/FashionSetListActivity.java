@@ -33,7 +33,7 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
     LinearLayout list;
 
     JSONObject jsonObj;
-    Button btn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,14 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
     @Override
     public void run() {
         try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("list 지움", "list 지움");
+                    list.removeAllViewsInLayout();
+                }
+            });
+
             SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
             String ip = pref.getString("ip_addr", "");   // http://192.168.55.193:8080
             Log.d("FashionSetListActivity", ip);
@@ -128,7 +136,7 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
                                                 ,row_set.getString("bag"),row_set.getString("shoes")
                                                 ,row_set.getString("accessory1"),row_set.getString("accessory2"),row_set.getString("accessory3"));
 
-                        btn = new Button(this);
+                        final Button btn = new Button(this);
                         btn.setId(i);
                         btn.setText(row_set.getString("set_name"));
 
@@ -145,9 +153,19 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
                             }
                         });
                         //list.addView(btn);
+                        /*
                         Thread.sleep(50);
                         handler.sendEmptyMessage(0);
                         Thread.sleep(50);
+
+                         */
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                list.addView(btn);
+                            }
+                        });
                     }
                 }
                 else {    //result 값이 0이면
@@ -162,13 +180,15 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
 
 
     }
-
+/*
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             list.addView(btn);
         }
     };
+
+ */
 
 
     // 서버에서 값 받아 JSONObjtect로 변환

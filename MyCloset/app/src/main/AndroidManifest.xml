@@ -59,6 +59,12 @@
         <activity android:name=".RecommendActivity" />
         <activity android:name=".RecommendResultActivity" />
 
+        <activity
+            android:name=".PopupChartActivity"
+            android:label="PopupChartActivity"
+            android:theme="@android:style/Theme.Dialog"
+            />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.mycloset.fileprovider"
