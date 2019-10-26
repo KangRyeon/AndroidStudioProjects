@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.mycloset.dto.FashionSetDTO;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -22,9 +23,22 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnChartValueSelectedListener, Runnable {
 
     Button recommend_btn;
     Button closet_btn;
@@ -33,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     PieChart pieChart;
     ArrayList<PieEntry> yValues;
 
-    String label[] = {"상의", "하의", "아우터", "기타"};
+    int result_total[];
+    //String label[] = {"상의", "하의", "아우터", "기타"};
+    String label[] = {"upper", "lower", "outer", "etc"};
     String[] outer = {"cardigan", "jacket", "padding", "coat", "jumper", "hood_zipup"};
     String[] upper = {"hood_T", "long_T", "pola", "shirt", "short_T", "sleeveless", "vest"};
     String[] lower = {"long_pants", "short_pants", "Leggings", "mini_skirt", "long_skirt"};
@@ -62,14 +78,13 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         chart_setting("옷장", "Clothes");
 
         // 차트안에 들어갈 entry
-        int label_num[] = {1, 2, 3, 5, 4, 5};
-        yValues = new ArrayList<PieEntry>();
-        for(int i=0; i<label.length; i++) {
-            yValues.add(new PieEntry(label_num[i], label[i]));
-        }
+        // 전체 옷 db검색결과 int로 받음.
+        result_total = new int[4];
+        Thread th = new Thread(MainActivity.this);
+        th.start();
 
-        // 위 차트안에 들어갈 값들에 대해 차트에 로드시킴.
-        chart_load(yValues);
+
+
 
         // 옷 추천 버튼 클릭시 - 새로운 액티비티가 틀어짐.
         recommend_btn.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SelectCameraGalleryRecommendActivity.class);
                 startActivity(intent);
-                finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
             }
         });
 
@@ -147,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         pieChart.animateY(1000, Easing.EaseInOutCubic); //애니메이션 Easing.EaseInOutQuad
     }
 
-    public void chart_load(ArrayList<PieEntry> values) {
+    public void chart_load() {
         // 각 라벨 설정
         PieDataSet dataSet = new PieDataSet(yValues,"");
         dataSet.setSliceSpace(3); // 차트 사이 거리
@@ -193,5 +208,104 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
     @Override
     public void onNothingSelected() {
         Log.i("PieChart", "nothing selected");
+    }
+
+    @Override
+    public void run() {
+
+        try {
+            SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+            String ip = pref.getString("ip_addr", "");   // http://192.168.55.193:8080
+            Log.d("MainActivity", ip);
+
+            URL connectUrl = new URL(ip+"/selectCategoryTotalById");       // 스프링프로젝트의 home.jsp 주소
+            DataOutputStream dos;
+            HttpURLConnection conn = (HttpURLConnection) connectUrl.openConnection();       // URL 연결한 객체 생성
+            Log.d("MainActivity","URL객체 생성");
+            if (conn != null) {
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                conn.setUseCaches(false);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+
+                // 원래 DataOutputStream 사용했으나 utf-8전송위해 아래껄로 바꿈
+                OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                PrintWriter writer = new PrintWriter(outStream);
+
+                Log.d("서버보내기 시작","서버보내기 시작");
+
+                //writer.write("id=asdf");
+                String id = pref.getString("id", "");   // test
+                Log.d("MainActivity", id);
+
+                writer.write("id="+id);
+                writer.flush();
+                writer.close();
+
+                Log.d("서버보내기 끝","서버보내기 끝");
+
+                // json data 받기
+                JSONObject jsonObj;
+                jsonObj = getJSONDataFromServer(conn);
+                JSONArray jArray = (JSONArray) jsonObj.get("total_results");
+                Log.d("row 개수",""+jArray.length());
+
+                // fashion set가 몇개인지
+                JSONObject row = jArray.getJSONObject(0);
+                String upper_total = row.getString("upper");
+                String lower_total = row.getString("lower");
+                String outer_total = row.getString("outer");
+                String etc_total = row.getString("etc");
+                result_total[0] = Integer.parseInt(upper_total);
+                result_total[1] = Integer.parseInt(lower_total);
+                result_total[2] = Integer.parseInt(outer_total);
+                result_total[3] = Integer.parseInt(etc_total);
+
+                //int label_num[] = {1, 2, 3, 5, 4, 5};
+                int label_num[] = {result_total[0], result_total[1], result_total[2], result_total[3]};
+
+                yValues = new ArrayList<PieEntry>();
+                for(int i=0; i<label.length; i++) {
+                    yValues.add(new PieEntry(label_num[i], label[i]));
+                }
+
+                // 위 차트안에 들어갈 값들에 대해 차트에 로드시킴.
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        chart_load();
+                    }
+                });
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("MainActivity", "에러발생했습니다...");
+        }
+    }
+    // 서버에서 값 받아 JSONObjtect로 변환
+    public JSONObject getJSONDataFromServer(HttpURLConnection conn) throws IOException, JSONException {
+        StringBuffer sb = new StringBuffer();
+
+        Log.d("파일", "파일 다 전송함 딥러닝결과 받아오기 시작");
+        if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+            Log.d("연결", "연결이 제대로 됨");
+            while (true) {
+                String line = br.readLine();
+                if (line == null)
+                    break;
+                sb.append(line + "\n");
+            }
+            Log.d("받은것", "오잉"+sb.toString());
+            br.close();
+        }
+        conn.disconnect();
+
+        // 받아온 source를 JSONObject로 변환한다.
+        JSONObject jsonObj = new JSONObject(sb.toString());
+
+        return jsonObj;
     }
 }

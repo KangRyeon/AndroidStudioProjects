@@ -2,6 +2,7 @@ package com.example.mycloset;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,9 +22,21 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
-public class PopupChartActivity extends Activity implements OnChartValueSelectedListener {
+public class PopupChartActivity extends Activity implements OnChartValueSelectedListener, Runnable {
     PieChart pieChart;
     ArrayList<PieEntry> yValues;
 
@@ -36,6 +49,7 @@ public class PopupChartActivity extends Activity implements OnChartValueSelected
     String[] etc = {"bag", "cap", "shoes", "accessory"};
 
     String[] now_category;
+    int result_total[];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,26 +73,24 @@ public class PopupChartActivity extends Activity implements OnChartValueSelected
 
         // 차트안에 들어갈 entry
         //int label_num[] = {1, 2, 3, 5, 4, 5, 6};
-        String label[] = {"상의", "하의", "아우터", "기타"};
-
+        String label_eng[] = {"upper", "lower", "outer", "etc"};
         int label_num[] = {1, 2, 3, 5, 4, 5,6,1,2};
 
         yValues = new ArrayList<PieEntry>();
-        if(category.equals("상의"))
+        if(category.equals("upper"))
             now_category = upper;
-        else if(category.equals("하의"))
+        else if(category.equals("lower"))
             now_category = lower;
-        else if(category.equals("아우터"))
+        else if(category.equals("outer"))
             now_category = outer;
         else
             now_category = etc;
-        for(int i=0; i<now_category.length; i++) {
-            yValues.add(new PieEntry(label_num[i], now_category[i]));
-        }
 
+        // 선택한 category에 따른 low_category들의 개수를 받아오고, cart_load() 함수 실행
+        result_total = new int[4];
+        Thread th = new Thread(PopupChartActivity.this);
+        th.start();
 
-        // 위 차트안에 들어갈 값들에 대해 차트에 로드시킴.
-        chart_load(yValues);
     }
     public void chart_setting(String center_txt, String label_name) {
         // 차트설정
@@ -125,7 +137,7 @@ public class PopupChartActivity extends Activity implements OnChartValueSelected
         pieChart.animateY(1000, Easing.EaseInOutCubic); //애니메이션 Easing.EaseInOutQuad
     }
 
-    public void chart_load(ArrayList<PieEntry> values) {
+    public void chart_load() {
         // 각 라벨 설정
         PieDataSet dataSet = new PieDataSet(yValues,"");
         dataSet.setSliceSpace(3); // 차트 사이 거리
@@ -164,5 +176,99 @@ public class PopupChartActivity extends Activity implements OnChartValueSelected
     @Override
     public void onNothingSelected() {
         Log.i("PieChart", "nothing selected");
+    }
+
+    @Override
+    public void run() {
+        try {
+            SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+            String ip = pref.getString("ip_addr", "");   // http://192.168.55.193:8080
+            Log.d("PopupChartActivity", ip);
+
+            URL connectUrl = new URL(ip+"/selectLowCategoryTotalById");       // 스프링프로젝트의 home.jsp 주소
+            DataOutputStream dos;
+            HttpURLConnection conn = (HttpURLConnection) connectUrl.openConnection();       // URL 연결한 객체 생성
+            Log.d("PopupChartActivity","URL객체 생성");
+            if (conn != null) {
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                conn.setUseCaches(false);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded");
+
+                // 원래 DataOutputStream 사용했으나 utf-8전송위해 아래껄로 바꿈
+                OutputStreamWriter outStream = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+                PrintWriter writer = new PrintWriter(outStream);
+
+                Log.d("서버보내기 시작","서버보내기 시작");
+
+                //writer.write("id=asdf");
+                String id = pref.getString("id", "");   // test
+                Log.d("PopupChartActivity", id);
+
+                writer.write("id="+id);
+                writer.write("&category="+category);
+                writer.flush();
+                writer.close();
+
+                Log.d("서버보내기 끝","서버보내기 끝");
+
+                // json data 받기
+                JSONObject jsonObj;
+                jsonObj = getJSONDataFromServer(conn);
+                JSONArray jArray = (JSONArray) jsonObj.get("total_results");
+                Log.d("row 개수",""+jArray.length());
+
+                // 몇개가져왔는지
+                JSONObject row = jArray.getJSONObject(0);
+
+                //int label_num[] = {1, 2, 3, 5, 4, 5};
+                int label_num[] = new int[now_category.length];
+                for(int i=0; i<now_category.length; i++) {
+                    label_num[i] = Integer.parseInt(row.getString(now_category[i]));
+                }
+
+                yValues = new ArrayList<PieEntry>();
+                for(int i=0; i<now_category.length; i++) {
+                    yValues.add(new PieEntry(label_num[i], now_category[i]));
+                }
+
+                // 위 차트안에 들어갈 값들에 대해 차트에 로드시킴.
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        chart_load();
+                    }
+                });
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("MainActivity", "에러발생했습니다...");
+        }
+    }
+    // 서버에서 값 받아 JSONObjtect로 변환
+    public JSONObject getJSONDataFromServer(HttpURLConnection conn) throws IOException, JSONException {
+        StringBuffer sb = new StringBuffer();
+
+        Log.d("파일", "파일 다 전송함 딥러닝결과 받아오기 시작");
+        if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+            Log.d("연결", "연결이 제대로 됨");
+            while (true) {
+                String line = br.readLine();
+                if (line == null)
+                    break;
+                sb.append(line + "\n");
+            }
+            Log.d("받은것", "오잉"+sb.toString());
+            br.close();
+        }
+        conn.disconnect();
+
+        // 받아온 source를 JSONObject로 변환한다.
+        JSONObject jsonObj = new JSONObject(sb.toString());
+
+        return jsonObj;
     }
 }

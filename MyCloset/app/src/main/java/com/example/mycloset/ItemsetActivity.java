@@ -2,13 +2,23 @@ package com.example.mycloset;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.mycloset.dto.FashionSetDTO;
 
@@ -16,7 +26,7 @@ import java.io.Serializable;
 
 public class ItemsetActivity extends AppCompatActivity {
 
-    LinearLayout list;
+    GridLayout list;
     Button add_clothes_btn;
     FashionSetDTO set;
     String category;
@@ -27,6 +37,7 @@ public class ItemsetActivity extends AppCompatActivity {
 
         String[] outer = {"cardigan", "jacket", "padding", "coat", "jumper", "hood zipup"};
         String[] upper = {"hood_T", "long_T", "pola", "shirt", "short_T", "sleeveless", "vest"};
+        int upper_draw[] = {R.drawable.hood_t, R.drawable.long_t, R.drawable.long_t, R.drawable.shirt_t, R.drawable.short_t, R.drawable.sleeveless, R.drawable.vest};
         String[] lower = {"long_pants", "short_pants", "Leggings", "mini_skirt", "long_skirt"};
         String[] onepeace = {"long_arm_mini_onepeace", "long_arm_long_onepeace", "short_arm_mini_onepeace", "short_arm_long_onepeace"};
         String[] etc = {"bag", "cap", "shoes"};
@@ -40,7 +51,7 @@ public class ItemsetActivity extends AppCompatActivity {
             Log.d("오류",e.toString());
         }
 
-        list = (LinearLayout)findViewById(R.id.list);
+        list = (GridLayout)findViewById(R.id.list);
         add_clothes_btn = (Button)findViewById(R.id.add_clothes_btn);
 
         // 옷 추가 버튼 클릭시 - 새로운 액티비티가 틀어짐. -> 원피스 upper 어케되는지 보기
@@ -124,6 +135,16 @@ public class ItemsetActivity extends AppCompatActivity {
                 Button btn = new Button(this);
                 btn.setId(i);
                 btn.setText(items[i]);
+                Log.d("폰트", ""+getAssets());
+                btn.setTypeface(Typeface.createFromAsset(getAssets(), "multilingual_hand.ttf"));
+
+                // 버튼에 이미지 넣어줌.
+                GridLayout.LayoutParams p = new GridLayout.LayoutParams();
+                p.width=350;
+                p.height=350;
+                btn.setLayoutParams(p);
+
+                btn.setBackground(ContextCompat.getDrawable(this, upper_draw[i]));
                 list.addView(btn);
 
                 final String finalItem = items[i];
@@ -147,7 +168,7 @@ public class ItemsetActivity extends AppCompatActivity {
 
             }
         }
-
+/*
         // onepeace라면 category 따로 설정해줘야함. category=onepeace, item=long_arm_mini_onepeace 보낼것.
         if(items2 != null) {
             for(int i=0; i<items2.length; i++) {
@@ -176,5 +197,7 @@ public class ItemsetActivity extends AppCompatActivity {
                 });
             }
         }
+
+ */
     }
 }

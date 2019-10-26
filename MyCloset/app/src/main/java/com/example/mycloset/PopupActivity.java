@@ -26,6 +26,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -70,6 +71,11 @@ public class PopupActivity extends Activity implements Runnable{
 
 
                 //액티비티(팝업) 닫기
+                Intent intent;
+                intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // closetActivity 원래열었던곳으로 돌아감
+
+                startActivity(intent);
                 finish();
             }
         });

@@ -202,7 +202,7 @@ public class ClosetActivity extends AppCompatActivity implements View.OnClickLis
 
         // etc로 변경
         switch(v.getId()){
-            case R.id.outer_btn:     // ip 받아오는 버튼
+            case R.id.outer_btn:
                 intent.putExtra("category","outer");
                 break;
             case R.id.bag_btn:

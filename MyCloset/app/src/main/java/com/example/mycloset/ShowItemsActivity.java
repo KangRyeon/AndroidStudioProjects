@@ -159,6 +159,7 @@ public class ShowItemsActivity  extends AppCompatActivity {
                     bundle.putSerializable("set", (Serializable) set);
                     intent.putExtras(bundle);
 
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // closetActivity 원래열었던곳으로 돌아감
                     startActivity(intent);
                     finish();      // finish() 를 하지 않으면 메인액티비티가 꺼지지 않음
                     //img_view.setImageBitmap(bitmap);

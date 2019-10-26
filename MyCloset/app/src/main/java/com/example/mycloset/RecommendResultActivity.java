@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mycloset.dto.ClothesDTO;
+import com.example.mycloset.dto.FashionSetDTO;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,10 +28,13 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class RecommendResultActivity extends AppCompatActivity implements Runnable {
+    Button choose_btn;
+    FashionSetDTO set;
 
     ImageView img_view;
     Bitmap bitmap;
@@ -60,7 +64,8 @@ public class RecommendResultActivity extends AppCompatActivity implements Runnab
         setContentView(R.layout.activity_recommendresult);
 
         count = 0;
-        // 이전 뷰에 있던 세트 정보 가져옴
+
+        // 이전뷰에서 입력한 사진에 대한 상의, 하의 결과
         Intent intent = getIntent();
         try {
             clothes_upper = (ClothesDTO) intent.getSerializableExtra("clothes_upper");
@@ -72,6 +77,9 @@ public class RecommendResultActivity extends AppCompatActivity implements Runnab
             Log.d("오류", e.toString());
         }
 
+        choose_btn = (Button) findViewById(R.id.choose_btn);
+        set = new FashionSetDTO();
+
         recommend_by_kinds_btn = (Button) findViewById(R.id.recommend_by_kinds_btn);
         recommend_by_color_btn = (Button) findViewById(R.id.recommend_by_color_btn);
         recommend_by_pattern_btn = (Button) findViewById(R.id.recommend_by_pattern_btn);
@@ -79,6 +87,23 @@ public class RecommendResultActivity extends AppCompatActivity implements Runnab
         lower_list_layout = (LinearLayout) findViewById(R.id.lower_list_layout);
         choose_upper_imageview = (ImageView) findViewById(R.id.choose_upper_imageview);
         choose_lower_imageview = (ImageView) findViewById(R.id.choose_lower_imageview);
+
+        // 옷선택 버튼을 누르면
+        choose_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent;
+                intent = new Intent(getApplicationContext(), ClosetActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // closetActivity 원래열었던곳으로 돌아감
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("set", (Serializable)set);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+            }
+        });
+
         // 옷종류 버튼 클릭시 - 분석한 옷종류에 따라 이미지 이름들 가져옴.
         // 상의폴더중에 hood_T 가져와서 보여줌
         // 하의폴더중에 long_pants 가져와서 보여줌
@@ -226,7 +251,7 @@ public class RecommendResultActivity extends AppCompatActivity implements Runnab
             @Override
             public void onClick(View v) {
                 Log.d("가져오기", "files에서 파일 가져오기: " + onclick_filename);
-                String files = getApplicationContext().getFilesDir() + "/" + finalCategory + "/" + onclick_foldername + "/" + onclick_filename;
+                final String files = getApplicationContext().getFilesDir() + "/" + finalCategory + "/" + onclick_foldername + "/" + onclick_filename;
 
                 // bitmap에 파일경로에 따라서 넣어줌
 
@@ -240,6 +265,7 @@ public class RecommendResultActivity extends AppCompatActivity implements Runnab
                         public void run() {
                             Log.d("upper 채워넣음", "upper 채워넣음");
                             choose_upper_imageview.setImageBitmap(choose_upper_bitmap);
+                            set.setUpper(files);
                         }
                     });
                 }
@@ -253,6 +279,7 @@ public class RecommendResultActivity extends AppCompatActivity implements Runnab
                         public void run() {
                             Log.d("lower 채워넣음", "lower 채워넣음");
                             choose_lower_imageview.setImageBitmap(choose_lower_bitmap);
+                            set.setLower(files);
                         }
                     });
                 }
