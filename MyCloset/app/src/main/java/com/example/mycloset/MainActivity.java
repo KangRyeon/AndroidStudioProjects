@@ -61,12 +61,13 @@ public class MainActivity extends AppCompatActivity implements OnChartValueSelec
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("id","test");
         editor.putString("ip_addr","http://192.168.55.193:8080");
         editor.commit();
-
+        */
 
         recommend_btn = (Button)findViewById(R.id.recommend_btn);
         closet_btn = (Button)findViewById(R.id.closet_btn);

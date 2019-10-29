@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity"
     android:background="#FFFFFF">
 
     <LinearLayout
@@ -25,25 +24,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="10"
+        android:layout_weight="4"
         android:orientation="horizontal">
         <Button
+            android:layout_marginLeft="30dp"
             android:id="@+id/closet_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/closet2"
             android:text="옷장" />
 
         <Button
             android:id="@+id/recommend_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/recommend2"
             android:text="옷 추천" />
 
         <Button
             android:id="@+id/fashionsetlist_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/myset2"
             android:text="내가 만든 세트" />
     </LinearLayout>
 

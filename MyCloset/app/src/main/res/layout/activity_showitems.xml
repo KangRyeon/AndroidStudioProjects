@@ -46,14 +46,25 @@
 
     <!-- 버튼부분 -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_weight="1" >
         <Button
             android:id="@+id/choose_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="선택하기"/>
+        <Button
+            android:id="@+id/modify_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="수정하기"/>
+        <Button
+            android:id="@+id/delete_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="삭제하기"/>
 
     </LinearLayout>
 </LinearLayout>

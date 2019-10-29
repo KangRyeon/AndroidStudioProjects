@@ -8,9 +8,11 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.mycloset.dto.FashionSetDTO;
 
@@ -30,7 +32,7 @@ import java.net.URL;
 
 public class FashionSetListActivity extends AppCompatActivity implements Runnable{
 
-    LinearLayout list;
+    GridLayout list;
 
     JSONObject jsonObj;
 
@@ -45,7 +47,7 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
         String[] lower = {"long_pants", "short_pants", "Leggings", "mini_skirt", "long_skirt"};
         String[] onepeace = {"long_arm_mini_onepeace", "long_arm_long_onepeace", "short_arm_mini_onepeace", "short_arm_long_onepeace"};
 
-        list = (LinearLayout)findViewById(R.id.list);
+        list = (GridLayout)findViewById(R.id.list);
 
         // 서버에서 db결과 받아옴
         Thread th = new Thread(FashionSetListActivity.this);
@@ -139,6 +141,12 @@ public class FashionSetListActivity extends AppCompatActivity implements Runnabl
                         final Button btn = new Button(this);
                         btn.setId(i);
                         btn.setText(row_set.getString("set_name"));
+                        GridLayout.LayoutParams p = new GridLayout.LayoutParams();
+                        p.width=350;
+                        p.height=350;
+                        btn.setLayoutParams(p);
+
+                        btn.setBackground(ContextCompat.getDrawable(this, R.drawable.myset));
 
                         btn.setOnClickListener(new View.OnClickListener() {
                             @Override

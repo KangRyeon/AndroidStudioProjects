@@ -3,14 +3,26 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/list"
     android:background="#FFFFFF">
 
-    <TextView
-        android:id="@+id/textView"
+    <GridLayout
+        android:id="@+id/list"
+        android:columnCount="3"
+        android:rowCount="3"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <!--
+        <Button
+            android:id="@+id/camera_btn"
+            android:layout_width="200px"
+            android:layout_height="200px"
+            android:background="@drawable/camera"
+            />
+         -->
+    </GridLayout>
 
     <!-- 상의-hood_T, shirt 등의 버튼동적생성 -->
 </LinearLayout>

@@ -42,9 +42,9 @@
                 <ImageButton
                     android:id="@+id/outer_btn"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="100dp"
                     android:layout_weight="1"
-                    android:background="@drawable/outer"
+                    android:background="@drawable/outer_icon"
                     android:scaleType="centerCrop"
 
                     android:text="아우터"
@@ -53,9 +53,9 @@
                 <ImageButton
                     android:id="@+id/bag_btn"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="100dp"
                     android:layout_weight="1"
-                    android:background="@drawable/bag"
+                    android:background="@drawable/bag_icon"
                     android:scaleType="centerCrop"
                     android:padding="50dp"
 
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/mannequin2"
+                android:background="@drawable/mannequin_icon4"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -83,14 +83,14 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginBottom="20px"
+                        android:paddingLeft="50px"
                         android:orientation="vertical">
                         <ImageButton
                             android:id="@+id/cap_btn"
-                            android:layout_width="match_parent"
-                            android:layout_height="200px"
-                            android:background="@drawable/cap"
+                            android:layout_width="300px"
+                            android:layout_height="300px"
+                            android:background="@drawable/cap_icon"
                             android:scaleType="centerCrop"
-                            android:padding="30dp"
                             android:text="모자" />
                     </LinearLayout>
 

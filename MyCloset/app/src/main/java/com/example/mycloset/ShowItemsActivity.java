@@ -25,6 +25,8 @@ public class ShowItemsActivity  extends AppCompatActivity {
     LinearLayout list_layout;
     ImageView img_view;
     Button choose_btn;
+    Button modify_btn;
+    Button delete_btn;
 
     Bitmap bitmap;
     Intent intent;
@@ -44,7 +46,8 @@ public class ShowItemsActivity  extends AppCompatActivity {
         list_layout = (LinearLayout) findViewById(R.id.list_layout);
         img_view = (ImageView) findViewById(R.id.img_view);
         choose_btn = (Button)findViewById(R.id.choose_btn);
-
+        modify_btn = (Button)findViewById(R.id.modify_btn);
+        delete_btn = (Button)findViewById(R.id.delete_btn);
 
         // 이전 뷰에 있던 세트 정보 가져옴
         Intent intent = getIntent();
@@ -98,6 +101,8 @@ public class ShowItemsActivity  extends AppCompatActivity {
             btn.setImageBitmap(resize);
             list_layout.addView(btn);
 
+            // bag, cap, shoes는 folder에 "bag"이라는 글자가 있음.
+            // category = "etc"로 설정되어있음.
             final String onclick_filename = list[i].getName();
             final String onclick_foldername = folder;
             btn.setOnClickListener(new View.OnClickListener() {
@@ -110,31 +115,16 @@ public class ShowItemsActivity  extends AppCompatActivity {
                     options.inJustDecodeBounds = false;
                     bitmap = BitmapFactory.decodeFile(files, options);
 
-                    Bitmap resize;
-                    int maxsize = 200;
-                    resize = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() * 200) / bitmap.getHeight(), 200, true);
-                    img_view.setImageBitmap(bitmap);
-                    //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
-                }
-            });
-
-            // bag, cap, shoes는 folder에 "bag"이라는 글자가 있음.
-            // category = "etc"로 설정되어있음.
-            final String finalFolder = folder;
-            choose_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("가져오기", "files에서 파일 가져오기");
-                    Intent intent = new Intent(ShowItemsActivity.this, ClosetActivity.class);
-                    if(finalFolder.equals("bag")) {
+                    item=onclick_filename;
+                    if(onclick_foldername.equals("bag")) {
                         set.setBag(files);
                         Log.d("set의 bag에 들어있는것", set.getBag());
                     }
-                    if(finalFolder.equals("cap")) {
+                    if(onclick_foldername.equals("cap")) {
                         set.setCap(files);
                         Log.d("set의 cap에 들어있는것", set.getCap());
                     }
-                    if(finalFolder.equals("shoes")) {
+                    if(onclick_foldername.equals("shoes")) {
                         set.setShoes(files);
                         Log.d("set의 shoes에 들어있는것", set.getShoes());
                     }
@@ -151,10 +141,21 @@ public class ShowItemsActivity  extends AppCompatActivity {
                         Log.d("set의 lower에 들어있는것", set.getLower());
                     }
 
-                    Log.d("옷장으로 넘기는 파일",category+", "+files);
-                    try{
-                        Log.d("set의 upper에 들어있는것", set.getUpper());
-                    }catch(Exception e){}
+                    Bitmap resize;
+                    int maxsize = 200;
+                    resize = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() * 200) / bitmap.getHeight(), 200, true);
+                    img_view.setImageBitmap(bitmap);
+                    //finish();      // finish() 를 하지 않으면 메인액티비가 꺼지지 않음
+                }
+            });
+
+
+            choose_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("가져오기", "files에서 파일 가져오기");
+                    Intent intent = new Intent(ShowItemsActivity.this, ClosetActivity.class);
+
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("set", (Serializable) set);
                     intent.putExtras(bundle);
@@ -163,6 +164,45 @@ public class ShowItemsActivity  extends AppCompatActivity {
                     startActivity(intent);
                     finish();      // finish() 를 하지 않으면 메인액티비티가 꺼지지 않음
                     //img_view.setImageBitmap(bitmap);
+                }
+            });
+
+            final String finalFolder = folder;
+            modify_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("수정하기", "modifyitemactivity로 넘어감");
+                    SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                    String id = pref.getString("id", "");   // http://192.168.55.193:8080
+
+                    Intent intent = new Intent(ShowItemsActivity.this, ModifyItemActivity.class);
+                    // files에서 .jpg를 지운 이름만 보냄
+                    Log.d("파일이름",files);
+                    String files_names[] = files.split("/");
+                    Log.d("파일이름",files_names[files_names.length-1]);
+                    String dress_num[] = files_names[files_names.length-1].split(".jpg");
+                    Log.d("파일이름",dress_num[0]);
+
+                    intent.putExtra("filepath", files);
+                    intent.putExtra("id", id);
+                    intent.putExtra("dress_num",dress_num[0]);
+
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("set", (Serializable) set);
+                    intent.putExtras(bundle);
+                    intent.putExtra("category", category);
+                    intent.putExtra("folder", finalFolder);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
+            delete_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("delete", "popupdeleteactivity로 넘어감");
+                    // popup 열리고 진짜로 삭제하시겠습니까? 띄우기, db에서 삭제, 원본사진도 삭제
                 }
             });
         }
