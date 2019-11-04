@@ -74,7 +74,11 @@
             android:label="PopupChartActivity"
             android:theme="@android:style/Theme.Dialog"
             />
-
+        <activity
+            android:name=".PopupDeleteActivity"
+            android:label="PopupDeleteActivity"
+            android:theme="@android:style/Theme.Dialog"
+            />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.mycloset.fileprovider"

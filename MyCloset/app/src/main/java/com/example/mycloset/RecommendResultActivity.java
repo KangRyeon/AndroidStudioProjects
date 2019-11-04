@@ -399,9 +399,9 @@ public class RecommendResultActivity extends AppCompatActivity implements Runnab
                 else if(url_request.equals("/selectClothesbyCategoryNPattern")) {
                     writer.write("id="+id);
                     writer.write("&upper_category="+clothes_upper.getCategory());
-                    writer.write("&upper_color=" + clothes_upper.getPattern());
+                    writer.write("&upper_pattern=" + clothes_upper.getPattern());
                     writer.write("&lower_category=" + clothes_lower.getCategory());
-                    writer.write("&lower_color=" + clothes_lower.getPattern());
+                    writer.write("&lower_pattern=" + clothes_lower.getPattern());
                 }
                 writer.flush();
                 /*

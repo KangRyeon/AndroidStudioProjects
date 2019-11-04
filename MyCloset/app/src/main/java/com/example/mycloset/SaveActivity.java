@@ -154,7 +154,7 @@ public class SaveActivity extends AppCompatActivity implements Runnable {
             String ip = pref.getString("ip_addr", "");   // http://192.168.55.193:8080
             Log.d("PopupActivity", ip);
 
-            String serverUri = ip+"/uploadImage5";
+            String serverUri = ip+"/uploadImage";
             String sendFilePath = getApplicationContext().getCacheDir().toString();
             String sendFileName = "/test.jpg";                                      // cache 폴더에 카메라, 갤러리에서 고른 이미지 있음.
 

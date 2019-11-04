@@ -38,7 +38,7 @@ public class ItemsetActivity extends AppCompatActivity {
         String[] outer = {"cardigan", "jacket", "padding", "coat", "jumper", "hood zipup"};
         String[] upper = {"hood_T", "long_T", "pola", "shirt", "short_T", "sleeveless", "vest"};
         int upper_draw[] = {R.drawable.hood_t, R.drawable.long_t, R.drawable.long_t, R.drawable.shirt_t, R.drawable.short_t, R.drawable.sleeveless, R.drawable.vest};
-        String[] lower = {"long_pants", "short_pants", "Leggings", "mini_skirt", "long_skirt"};
+        String[] lower = {"long_pants", "short_pants", "leggings", "mini_skirt", "long_skirt"};
         String[] onepeace = {"long_arm_mini_onepeace", "long_arm_long_onepeace", "short_arm_mini_onepeace", "short_arm_long_onepeace"};
         String[] etc = {"bag", "cap", "shoes"};
 

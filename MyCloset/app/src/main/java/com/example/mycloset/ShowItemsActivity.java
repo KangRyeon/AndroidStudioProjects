@@ -187,7 +187,7 @@ public class ShowItemsActivity  extends AppCompatActivity {
                     intent.putExtra("id", id);
                     intent.putExtra("dress_num",dress_num[0]);
 
-
+                    // modifyitem끝나고 set, category, folder showItemsActivity로 넘겨야함.
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("set", (Serializable) set);
                     intent.putExtras(bundle);
@@ -201,8 +201,28 @@ public class ShowItemsActivity  extends AppCompatActivity {
             delete_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // popup 열리고 정말로 삭제하시겠습니까? 띄우기, db에서 삭제, 원본사진도 삭제
                     Log.d("delete", "popupdeleteactivity로 넘어감");
-                    // popup 열리고 진짜로 삭제하시겠습니까? 띄우기, db에서 삭제, 원본사진도 삭제
+                    Intent intent = new Intent(ShowItemsActivity.this, PopupDeleteActivity.class);
+
+                    Log.d("파일이름",files);
+                    String files_names[] = files.split("/");
+                    Log.d("파일이름",files_names[files_names.length-1]);
+                    String dress_num[] = files_names[files_names.length-1].split(".jpg");
+                    Log.d("파일이름",dress_num[0]);
+
+                    intent.putExtra("dress_num",dress_num[0]);
+                    intent.putExtra("filepath", files);  // 현재 선택된 파일 넘기면 그파일 삭제
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("set", (Serializable) set);
+                    intent.putExtras(bundle);
+                    intent.putExtra("category", category);
+                    intent.putExtra("folder", finalFolder);
+
+                    startActivity(intent);
+                    finish();
+
                 }
             });
         }
